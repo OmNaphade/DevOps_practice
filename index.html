@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Hub - Java Theory + Coding Solutions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div>
+        <div class="logo">Interview<span>Hub</span></div>
+        <div class="site-subtitle">Sunbeam Java Theory | CDAC Coding Solutions | Static Question Bank</div>
+      </div>
+      <div class="site-stats" id="siteStats">
+        <div class="stat" id="statTheory">- Theory Q&amp;A</div>
+        <div class="stat" id="statCoding">- Coding Problems</div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-bar" aria-label="Main sections">
+    <button class="tab-btn active-theory" id="btn-theory" type="button" onclick="switchTab('theory')">Java Theory</button>
+    <button class="tab-btn" id="btn-coding" type="button" onclick="switchTab('coding')">Coding Solutions</button>
+    <button class="tab-btn" id="btn-add" type="button" onclick="switchTab('add')">Add Q&amp;A</button>
+    <div class="search-wrap">
+      <input class="search-box" type="search" id="searchInput" placeholder="Search..." oninput="onSearch()" />
+    </div>
+  </nav>
+
+  <section class="tab-panel active" id="panel-theory" aria-label="Java theory questions">
+    <div class="theory-wrap">
+      <aside class="sidebar">
+        <div class="toc">
+          <div class="toc-heading">Jump To</div>
+          <div id="tocLinks"></div>
+        </div>
+      </aside>
+      <main class="theory-main" id="theoryMain"></main>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-coding" aria-label="Coding solutions">
+    <div class="coding-hero">
+      <h1>CDAC Interview - Coding Solutions</h1>
+      <p>Time and space optimized implementations from real company interviews</p>
+      <div class="badge-row">
+        <span class="badge badge-t">Java</span>
+        <span class="badge badge-a">SQL</span>
+        <span class="badge badge-v">JavaScript</span>
+        <span class="badge badge-t">DSA</span>
+        <span class="badge badge-a">Pattern, Coupa, NetSPI, Veritas, Cerillion and more</span>
+      </div>
+    </div>
+    <nav class="coding-nav" id="codingNav" aria-label="Coding categories"></nav>
+    <div class="coding-main" id="codingMain"></div>
+  </section>
+
+  <section class="tab-panel" id="panel-add" aria-label="Add question and answer">
+    <main class="add-main">
+      <div class="add-header">
+        <h1>Add Topics, Subtopics, and Q&amp;A</h1>
+        <p>Create theory or coding content without touching HTML. New items appear instantly, are saved in this browser, and can be exported as updated JSON.</p>
+      </div>
+
+      <form class="qa-form" id="qaForm" onsubmit="addContent(event)">
+        <div class="form-grid">
+          <label>
+            Content Type
+            <select id="qaKind" onchange="updateFormMode()">
+              <option value="theory">Theory</option>
+              <option value="coding">Coding</option>
+            </select>
+          </label>
+          <label>
+            Add Type
+            <select id="qaAction" onchange="updateFormMode()">
+              <option value="question">Question / Problem</option>
+              <option value="subtopic">Subtopic</option>
+              <option value="main-topic">Main Topic</option>
+            </select>
+          </label>
+          <label data-show="subtopic question">
+            <span id="qaMainTopicLabel">Theory Main Topic</span>
+            <select id="qaMainTopic" onchange="populateContentForm()"></select>
+          </label>
+          <label data-show="question">
+            <span id="qaSubtopicLabel">Theory Subtopic</span>
+            <select id="qaSubtopic" onchange="suggestQuestionId()"></select>
+          </label>
+          <label data-show="main-topic">
+            <span id="qaNewMainTopicLabel">New Theory Main Topic</span>
+            <input id="qaNewMainTopic" type="text" placeholder="Java, SQL, Python, Shell..." />
+          </label>
+          <label data-show="subtopic">
+            <span id="qaNewSubtopicLabel">New Theory Subtopic</span>
+            <input id="qaNewSubtopic" type="text" placeholder="OOP, Functions, Docker, Sliding Window..." />
+          </label>
+          <label data-show="subtopic">
+            Icon
+            <input id="qaIcon" type="text" maxlength="2" placeholder="Optional" />
+          </label>
+          <label data-show="question">
+            <span id="qaIdLabel">Question ID</span>
+            <input id="qaId" type="text" placeholder="q80" required />
+          </label>
+          <label class="wide" data-show="question">
+            <span id="qaQuestionLabel">Question</span>
+            <input id="qaQuestion" type="text" placeholder="What is ...?" required />
+          </label>
+          <label class="wide" data-show="question">
+            <span id="qaExplanationLabel">Answer / Explanation</span>
+            <textarea id="qaExplanation" rows="5" placeholder="Write the answer here. Simple HTML like &lt;strong&gt;important&lt;/strong&gt; is supported."></textarea>
+          </label>
+          <label class="wide" data-show="question">
+            Code
+            <textarea id="qaCode" rows="7" placeholder="Optional code example"></textarea>
+          </label>
+          <label data-show="question">
+            Language
+            <select id="qaLanguage">
+              <option value="java">Java</option>
+              <option value="sql">SQL</option>
+              <option value="python">Python</option>
+              <option value="shell">Shell</option>
+              <option value="javascript">JavaScript</option>
+              <option value="text">Text</option>
+            </select>
+          </label>
+          <label data-show="question">
+            Tags
+            <span class="tag-selects">
+              <select id="qaDifficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+              <select id="qaMarker">
+                <option value="">No marker</option>
+                <option value="⭐ Frequent">Frequent</option>
+              </select>
+            </span>
+          </label>
+          <div class="wide coding-fields" id="codingFields" hidden>
+            <label>
+              Time Complexity
+              <input id="qaTime" type="text" placeholder="O(n)" />
+            </label>
+            <label>
+              Space Complexity
+              <input id="qaSpace" type="text" placeholder="O(1)" />
+            </label>
+            <label>
+              Number Color
+              <select id="qaNumColor">
+                <option value="teal">Teal</option>
+                <option value="amber">Amber</option>
+                <option value="violet">Violet</option>
+                <option value="green">Green</option>
+                <option value="red">Red</option>
+              </select>
+            </label>
+            <label class="wide">
+              Approach
+              <textarea id="qaApproach" rows="3" placeholder="Brief optimized approach"></textarea>
+            </label>
+            <label class="wide">
+              SQL Note
+              <input id="qaSqlNote" type="text" placeholder="Optional SQL note" />
+            </label>
+          </div>
+          <label class="wide" data-show="question">
+            Note
+            <input id="qaNote" type="text" placeholder="Optional note" />
+          </label>
+          <label class="wide" data-show="question">
+            Tip
+            <input id="qaTip" type="text" placeholder="Optional tip" />
+          </label>
+          <label class="wide" data-show="question">
+            Warning
+            <input id="qaWarn" type="text" placeholder="Optional warning" />
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Add</button>
+          <button type="button" class="ghost-btn" onclick="exportTheoryJson()">Export data-theory.json</button>
+          <button type="button" class="ghost-btn" onclick="exportCodingJson()">Export data-coding.json</button>
+          <button type="button" class="danger-btn" onclick="clearLocalQuestions()">Clear Browser Adds</button>
+        </div>
+        <p class="form-status" id="qaStatus"></p>
+      </form>
+
+      <section class="json-preview">
+        <div class="preview-head">
+          <h2>Latest Question JSON</h2>
+          <button type="button" class="ghost-btn small" onclick="copyLatestQuestion()">Copy</button>
+        </div>
+        <pre><code id="latestQuestionJson">{}</code></pre>
+      </section>
+    </main>
+  </section>
+
+  <footer>
+    <p>
+      <span>Java Theory</span> - Sunbeam Infotech Interview Bank &nbsp;|&nbsp;
+      <span>Coding Solutions</span> - CDAC Batch
+    </p>
+    <p class="footer-shortcuts">Alt+1 Theory &nbsp; Alt+2 Coding &nbsp; Alt+3 Add Q&amp;A &nbsp; Esc Clear</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

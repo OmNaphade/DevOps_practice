@@ -1,0 +1,1921 @@
+[
+  {
+    "id": "s1",
+    "icon": "☕",
+    "color": "c1",
+    "dcolor": "d1",
+    "title": "Core Java — OOP Concepts",
+    "toc": "Core Java OOP",
+    "questions": [
+      {
+        "id": "q01",
+        "question": "What are the four pillars of OOP?",
+        "explanation": "Object-Oriented Programming rests on four pillars:\n\n<strong>1. Encapsulation</strong> — bundling data and methods, hiding internal state.\n<strong>2. Abstraction</strong> — exposing only essential features, hiding implementation.\n<strong>3. Inheritance</strong> — a subclass acquires properties and behaviours of a superclass, promoting code reuse.\n<strong>4. Polymorphism</strong> — one interface, many forms. Achieved via method overloading (compile-time) and method overriding (runtime).",
+        "code": "// Inheritance + Polymorphism\nclass Animal {\n    void sound() { System.out.println(\"...\"); }\n}\nclass Dog extends Animal {\n    @Override\n    void sound() { System.out.println(\"Woof\"); }  // runtime polymorphism\n}\nclass Cat extends Animal {\n    @Override\n    void sound() { System.out.println(\"Meow\"); }\n}\nAnimal a = new Dog();  // upcasting\na.sound();             // → Woof  (dynamic dispatch)",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q02",
+        "question": "What is the this keyword? What is the super keyword?",
+        "explanation": "<strong>this</strong> refers to the current instance of the class. Used to differentiate instance variables from local variables, to call another constructor of the same class (constructor chaining), and to pass the current object as an argument.\n\n<strong>super</strong> refers to the immediate parent class. Used to call the parent class constructor, access parent class methods/fields that are hidden by the child.",
+        "code": "class Vehicle {\n    String brand;\n    Vehicle(String brand) { this.brand = brand; }\n    void info() { System.out.println(\"Brand: \" + brand); }\n}\n\nclass Car extends Vehicle {\n    int speed;\n    Car(String brand, int speed) {\n        super(brand);       // call parent constructor\n        this.speed = speed; // this → current instance\n    }\n    void info() {\n        super.info();       // call parent method\n        System.out.println(\"Speed: \" + speed);\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      },
+      {
+        "id": "q03",
+        "question": "What is a constructor? What are its types?",
+        "explanation": "A constructor is a special method used to initialize objects. It has the same name as the class, no return type, and is called automatically when an object is created.\n\n<strong>Types:</strong>\n- <strong>Default constructor</strong> — no arguments, provided by Java if none is defined.\n- <strong>Parameterized constructor</strong> — takes arguments to initialize fields with custom values.\n- <strong>Copy constructor</strong> — takes another object of the same class and copies its state (not built-in in Java, but commonly written manually).",
+        "code": "class Student {\n    String name;\n    int age;\n\n    // Default constructor\n    Student() { name = \"Unknown\"; age = 0; }\n\n    // Parameterized constructor\n    Student(String name, int age) {\n        this.name = name;\n        this.age  = age;\n    }\n\n    // Copy constructor\n    Student(Student s) {\n        this.name = s.name;\n        this.age  = s.age;\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "Constructors are NOT inherited. If a parent has only a parameterized constructor, the child must call super(args) explicitly.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q04",
+        "question": "Explain the static keyword in Java.",
+        "explanation": "<strong>static</strong> means the member belongs to the <em>class</em>, not to any instance. All instances share the same static member.\n\n- <strong>Static variable</strong> — shared across all objects (e.g. a counter).\n- <strong>Static method</strong> — can be called without creating an object; cannot access non-static members directly.\n- <strong>Static block</strong> — runs once when the class is loaded, used for static initialization.\n- <strong>Static inner class</strong> — nested class that does not need an outer class instance.",
+        "code": "class Counter {\n    static int count = 0;   // shared across all instances\n    String name;\n\n    static {\n        System.out.println(\"Class loaded\");  // static block\n    }\n\n    Counter(String name) {\n        this.name = name;\n        count++;            // increment shared counter\n    }\n\n    static int getCount() { return count; }  // static method\n}\n\nCounter a = new Counter(\"A\");\nCounter b = new Counter(\"B\");\nSystem.out.println(Counter.getCount()); // → 2",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "static methods cannot use 'this' or call instance methods directly.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q05",
+        "question": "What is the final keyword in Java?",
+        "explanation": "The <strong>final</strong> keyword restricts modification:\n\n- <strong>final variable</strong> — value cannot be changed after assignment (constant).\n- <strong>final method</strong> — cannot be overridden by subclasses.\n- <strong>final class</strong> — cannot be extended (e.g. String, Integer are final).",
+        "code": "final double PI = 3.14159;      // constant — cannot reassign\n// PI = 3;  ← compile error\n\nfinal class Immutable { }       // cannot extend\n// class Child extends Immutable { }  ← error\n\nclass Base {\n    final void display() {       // cannot override\n        System.out.println(\"Base\");\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "A final reference variable cannot point to a new object, but the object's internal state can still be changed.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      },
+      {
+        "id": "q06",
+        "question": "What is encapsulation? What is abstraction? How are they different?",
+        "explanation": "<strong>Encapsulation</strong> is bundling data (fields) and the methods that operate on that data into a single unit (class), and restricting direct access to some components using access modifiers. It is about <em>hiding data</em>.\n\n<strong>Abstraction</strong> is hiding the implementation details and showing only the essential features to the user. It is about <em>hiding complexity</em>.\n\nKey difference: Encapsulation wraps data and code together; Abstraction hides the internal workings from the outside world.",
+        "code": "// ENCAPSULATION — data hidden behind getters/setters\nclass BankAccount {\n    private double balance;   // hidden\n    public double getBalance() { return balance; }\n    public void deposit(double amt) {\n        if (amt > 0) balance += amt;\n    }\n}\n\n// ABSTRACTION — hide HOW, expose WHAT\nabstract class Shape {\n    abstract double area();   // what it does — hidden how\n}\nclass Circle extends Shape {\n    double r;\n    double area() { return Math.PI * r * r; }  // implementation\n}",
+        "language": "java",
+        "tableHeaders": [
+          "Feature",
+          "Encapsulation",
+          "Abstraction"
+        ],
+        "tableRows": [
+          [
+            "Purpose",
+            "Hide data",
+            "Hide complexity"
+          ],
+          [
+            "Achieved via",
+            "Access modifiers (private)",
+            "Abstract class / Interface"
+          ],
+          [
+            "Focus",
+            "Data security",
+            "Design clarity"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q07",
+        "question": "What is the Diamond Problem? How does Java handle it with interfaces having default methods?",
+        "explanation": "The <strong>diamond problem</strong> occurs when a class inherits from two sources that both define the same method. Java resolved multiple inheritance of classes but introduced it again with Java 8 default methods in interfaces.",
+        "code": "// Java 8 — Diamond Problem with default methods\ninterface A {\n    default void fun() { System.out.println(\"A\"); }\n}\ninterface B {\n    default void fun() { System.out.println(\"B\"); }\n}\n\n// ❌ COMPILE ERROR — ambiguity, must override\nclass C implements A, B {\n    @Override\n    public void fun() {\n        A.super.fun();  // ✅ explicitly pick one\n    }\n}\n\n// C++ allows ambiguity — obj.fun() → compile error\n// Java 7/C# → no default methods → implementing class MUST override abstract method",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ Rule: If two interfaces provide default implementations for the same method, the implementing class must override it to resolve ambiguity.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q08",
+        "question": "Is Java pass-by-value or pass-by-reference? Explain with examples.",
+        "explanation": "Java is <strong>always pass-by-value</strong>. For primitives, the value itself is copied. For objects, the reference (memory address) is copied — not the object.",
+        "code": "// 1. Primitives — pass by VALUE (copy created)\nstatic void swap(int x, int y) {\n    int t = x; x = y; y = t;\n}\nswap(10, 20);  // a, b unchanged in caller\n\n// 2. Objects — reference is copied (NOT object)\nstatic void modify(Date d) {\n    d.setYear(2025);  // ✅ change reflected — same object\n    d = new Date();    // ❌ reassign doesn't affect caller\n}\n\n// 3. Swap via array (workaround)\nstatic void swap(int[] a) {\n    int t = a[0]; a[0] = a[1]; a[1] = t;\n}\nswap(new int[]{10, 20});  // ✅ changes visible",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q09",
+        "question": "What is the difference between Shallow Copy and Deep Copy?",
+        "explanation": "Shallow copy copies field values — but object references point to the <strong>same</strong> nested objects. Deep copy duplicates every nested object too.",
+        "code": "class Emp implements Cloneable {\n    int id;  String name;  Date joiningDate;\n\n    // SHALLOW COPY — Date object shared!\n    public Emp shallowCopy() throws CloneNotSupportedException {\n        return (Emp) super.clone();\n    }\n\n    // DEEP COPY — Date cloned separately\n    public Emp deepCopy() throws CloneNotSupportedException {\n        Emp copy = (Emp) super.clone();\n        copy.joiningDate = (Date) joiningDate.clone();\n        return copy;\n    }\n}",
+        "language": "java",
+        "tableHeaders": [
+          "Feature",
+          "Shallow Copy",
+          "Deep Copy"
+        ],
+        "tableRows": [
+          [
+            "Primitive fields",
+            "Copied",
+            "Copied"
+          ],
+          [
+            "Object references",
+            "Shared (same ref)",
+            "New clone created"
+          ],
+          [
+            "Risk",
+            "Mutations affect both",
+            "Independent copies"
+          ],
+          [
+            "Method",
+            "Object.clone()",
+            "Clone each nested obj"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q10",
+        "question": "What are Wrapper Classes? Explain Autoboxing and Unboxing.",
+        "explanation": "Wrapper classes wrap primitive types as objects, enabling use in collections and providing utility methods.",
+        "code": "// Primitive → Wrapper mapping\n// int → Integer, float → Float, double → Double\n// byte → Byte, short → Short, long → Long\n// char → Character, boolean → Boolean\n\n// AUTOBOXING — primitive auto-converts to wrapper\nint i = 10;\nInteger j = i;       // int → Integer (boxing)\nlist.add(123);         // int → Integer (boxing)\n\n// AUTO-UNBOXING — wrapper auto-converts to primitive\nint k = j;            // Integer → int (unboxing)\n\n// Conversion methods\nInteger a = Integer.valueOf(\"42\");   // String → Integer\nint     b = Integer.parseInt(\"42\"); // String → int\nint     c = a.intValue();           // Integer → int\n\n// Static helpers\nInteger.max(5, 10);   // → 10\nInteger.sum(5, 10);   // → 15",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "⚠ Unboxing a null wrapper throws NullPointerException.",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q11",
+        "question": "What is the difference between Class, Abstract Class, and Interface?",
+        "explanation": "",
+        "code": "// CLASS — complete blueprint\nclass Dog {\n    String name;\n    void bark() { System.out.println(\"Woof\"); }\n}\n\n// ABSTRACT CLASS — partial implementation\nabstract class Animal {\n    String name;\n    abstract void sound();    // subclass must implement\n    void breathe() { ... }    // shared implementation\n}\n\n// INTERFACE — contract / specification\ninterface Flyable {\n    void fly();                          // abstract (default)\n    default void glide() { ... }        // default method (Java 8)\n    static void  rules() { ... }        // static helper (Java 8)\n}\n\n// MARKER INTERFACE — empty, signals capability\ninterface Serializable {}  // JVM checks this tag",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "Class",
+          "Abstract Class",
+          "Interface"
+        ],
+        "tableRows": [
+          [
+            "Instantiate",
+            "✅",
+            "❌",
+            "❌"
+          ],
+          [
+            "Multiple inherit",
+            "❌",
+            "❌",
+            "✅"
+          ],
+          [
+            "Fields",
+            "Any",
+            "Any",
+            "public static final"
+          ],
+          [
+            "Constructors",
+            "✅",
+            "✅",
+            "❌"
+          ],
+          [
+            "Use for",
+            "Object model",
+            "Logical entity",
+            "Contract / API"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q12",
+        "question": "What is the difference between String, StringBuilder, and StringBuffer?",
+        "explanation": "",
+        "code": "// String — IMMUTABLE, stored in String Pool\nString s = \"hello\";\ns.concat(\" world\");  // creates a NEW String, s unchanged\n\n// StringBuilder — MUTABLE, NOT thread-safe, FAST\nStringBuilder sb = new StringBuilder(\"hello\");\nsb.append(\" world\");  // modifies in-place → \"hello world\"\nsb.reverse();         // → \"dlrow olleh\"\n\n// StringBuffer — MUTABLE, thread-safe (synchronized), SLOWER\nStringBuffer sbf = new StringBuffer(\"hello\");\nsbf.append(\" world\"); // thread-safe modification",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "String",
+          "StringBuilder",
+          "StringBuffer"
+        ],
+        "tableRows": [
+          [
+            "Mutable",
+            "❌",
+            "✅",
+            "✅"
+          ],
+          [
+            "Thread-safe",
+            "✅ (immutable)",
+            "❌",
+            "✅"
+          ],
+          [
+            "Performance",
+            "Slowest (concat)",
+            "Fastest",
+            "Medium"
+          ],
+          [
+            "Use when",
+            "Fixed text",
+            "Single-thread ops",
+            "Multi-thread ops"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q13",
+        "question": "What is method overloading vs method overriding?",
+        "explanation": "",
+        "code": "// OVERLOADING — same name, different signature (compile-time)\nclass Calc {\n    int    add(int a, int b)       { return a + b; }\n    double add(double a, double b) { return a + b; }  // different params\n    int    add(int a, int b, int c){ return a+b+c; }   // extra param\n}\n\n// OVERRIDING — same name + signature in subclass (runtime)\nclass Animal { void sound() { System.out.println(\"...\"); } }\nclass Dog extends Animal {\n    @Override\n    void sound() { System.out.println(\"Woof\"); }  // runtime polymorphism\n}\nAnimal a = new Dog(); a.sound(); // → \"Woof\" (dynamic dispatch)",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      },
+      {
+        "id": "q14",
+        "question": "Explain the concept of Packages in Java and why they are used.",
+        "explanation": "Packages group related classes/interfaces for organization, modularity, and avoiding name clashes.",
+        "code": "// import — brings public types from other packages\nimport java.util.Date;\nimport java.util.*;       // wildcard\n\n// import static — brings static members\nimport static java.lang.Math.PI;\nimport static java.lang.Math.*;\n\ndouble area = PI * Math.pow(rad, 2);  // with import static Math.*\ndouble area = PI * pow(rad, 2);       // no class prefix needed",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ Three purposes: ① Code organization ② Maintainability/modularity ③ Avoid name clashing",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s2",
+    "icon": "📦",
+    "color": "c2",
+    "dcolor": "d2",
+    "title": "Collections & Generics",
+    "toc": "Collections & Generics",
+    "questions": [
+      {
+        "id": "q15",
+        "question": "What is the Java Collections Framework? Explain List, Set, and Map.",
+        "explanation": "The Java Collections Framework provides a unified architecture of interfaces and classes to store and manipulate groups of objects.\n\n<strong>List</strong> — ordered, allows duplicates. Main implementations: ArrayList (fast random access), LinkedList (fast insert/delete).\n\n<strong>Set</strong> — unordered, no duplicates. Main implementations: HashSet (O(1) ops), TreeSet (sorted), LinkedHashSet (insertion order).\n\n<strong>Map</strong> — key-value pairs, keys unique. Main implementations: HashMap, TreeMap (sorted keys), LinkedHashMap.",
+        "code": "// LIST\nList<String> list = new ArrayList<>();\nlist.add(\"a\"); list.add(\"a\");  // duplicates allowed\n\n// SET\nSet<String> set = new HashSet<>();\nset.add(\"a\"); set.add(\"a\");    // second add ignored\nSystem.out.println(set.size()); // → 1\n\n// MAP\nMap<String, Integer> map = new HashMap<>();\nmap.put(\"one\", 1);\nmap.put(\"two\", 2);\nSystem.out.println(map.get(\"one\")); // → 1",
+        "language": "java",
+        "tableHeaders": [
+          "Interface",
+          "Ordered?",
+          "Duplicates?",
+          "Null?"
+        ],
+        "tableRows": [
+          [
+            "List",
+            "Yes",
+            "Yes",
+            "Yes"
+          ],
+          [
+            "Set",
+            "No (HashSet)",
+            "No",
+            "One null (HashSet)"
+          ],
+          [
+            "Map",
+            "No (HashMap)",
+            "Keys: No, Values: Yes",
+            "One null key (HashMap)"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q16",
+        "question": "What is the difference between ArrayList and Vector?",
+        "explanation": "",
+        "code": "// Vector — Legacy (Java 1.0), SYNCHRONIZED (thread-safe but SLOW)\n// Traversal: Enumeration, Iterator\nVector<String> v = new Vector<>();\nEnumeration<String> e = v.elements();\n\n// ArrayList — Java 1.2, NOT synchronized (FAST)\n// Traversal: Iterator, ListIterator, for-each\nArrayList<String> list = new ArrayList<>();\n\n// ListIterator — bidirectional traversal\nListIterator<String> itr = list.listIterator();\nwhile (itr.hasNext())     { String s = itr.next();     }  // forward\nwhile (itr.hasPrevious()) { String s = itr.previous(); }  // backward",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "ArrayList",
+          "Vector"
+        ],
+        "tableRows": [
+          [
+            "Introduced",
+            "Java 1.2",
+            "Java 1.0"
+          ],
+          [
+            "Synchronized",
+            "❌ (use Collections.synchronizedList)",
+            "✅"
+          ],
+          [
+            "Performance",
+            "Fast",
+            "Slow"
+          ],
+          [
+            "Growth factor",
+            "50%",
+            "100% (doubles)"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q17",
+        "question": "What are Generics? Why are they needed? What are the restrictions?",
+        "explanation": "Generics provide <strong>type safety at compile time</strong>, eliminating ClassCastException at runtime and removing the need for casts.",
+        "code": "// WITHOUT generics (Java 1.4) — ClassCastException at runtime\nArrayList al = new ArrayList();\nal.add(11); al.add(22); al.add(\"33\"); // no compile error!\nfor (Object ele : al) {\n    Integer i = (Integer) ele; // 💥 ClassCastException on \"33\"\n}\n\n// WITH generics (Java 5+) — compile-time type check\nArrayList<Integer> al = new ArrayList<>();\nal.add(11); al.add(22);\nal.add(\"33\");  // ✅ COMPILE ERROR — caught early\nfor (Integer ele : al) { System.out.println(ele); }  // no cast needed\n\n// Generic restrictions\nArrayList<int> x = ...;          // ❌ no primitives\nnew T();                          // ❌ cannot instantiate generic type\nnew T[10];                        // ❌ cannot create generic array\nthrow new T();                    // ❌ cannot throw generic type",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ Generic type erasure: at runtime, all type parameters become Object. Generic info only exists at compile time.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q18",
+        "question": "What is the difference between HashMap, LinkedHashMap, and TreeMap?",
+        "explanation": "",
+        "code": "Map<String, Integer> hash   = new HashMap<>();     // no order guarantee\nMap<String, Integer> linked = new LinkedHashMap<>(); // insertion order\nMap<String, Integer> tree   = new TreeMap<>();      // sorted by key",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "HashMap",
+          "LinkedHashMap",
+          "TreeMap"
+        ],
+        "tableRows": [
+          [
+            "Order",
+            "None",
+            "Insertion order",
+            "Sorted (natural/comparator)"
+          ],
+          [
+            "Null key",
+            "1 allowed",
+            "1 allowed",
+            "❌"
+          ],
+          [
+            "Performance",
+            "O(1)",
+            "O(1)",
+            "O(log n)"
+          ],
+          [
+            "Backed by",
+            "Hash table",
+            "Hash + linked list",
+            "Red-black tree"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q19",
+        "question": "Explain fail-fast vs fail-safe iterators.",
+        "explanation": "",
+        "code": "// FAIL-FAST — throws ConcurrentModificationException if modified during iteration\nList<String> list = new ArrayList<>(Arrays.asList(\"a\",\"b\",\"c\"));\nfor (String s : list) {\n    list.remove(s);  // 💥 ConcurrentModificationException\n}\n// Fix: use Iterator.remove()\nIterator<String> itr = list.iterator();\nwhile (itr.hasNext()) { itr.next(); itr.remove(); }  // ✅ safe\n\n// FAIL-SAFE — works on a copy, no exception\nCopyOnWriteArrayList<String> cowList = new CopyOnWriteArrayList<>(list);\nfor (String s : cowList) {\n    cowList.remove(s);  // ✅ no exception (iterates snapshot)\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q20",
+        "question": "How does HashMap work internally? What is hashing?",
+        "explanation": "",
+        "code": "// HashMap = Array of Buckets (LinkedList/TreeNode after Java 8)\n// Steps: put(key, value)\n// 1. Compute hash: hash = key.hashCode() ^ (hash >>> 16)\n// 2. Compute index: index = hash & (capacity - 1)\n// 3. Place in bucket; handle collision via chaining\n// 4. If bucket size > 8 → convert to TreeNode (O(log n))\n\nclass Person {\n    String name; int age;\n    @Override public int hashCode() { return Objects.hash(name, age); }\n    @Override public boolean equals(Object o) {\n        if (this == o) return true;\n        Person p = (Person) o;\n        return age == p.age && Objects.equals(name, p.name);\n    }\n}\n// Rule: if equals() is true → hashCode() MUST be equal",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "⚠ Always override both hashCode() and equals() together when using objects as Map keys.",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q21",
+        "question": "What is the difference between Comparable and Comparator?",
+        "explanation": "",
+        "code": "// Comparable — natural ordering (part of the class)\nclass Student implements Comparable<Student> {\n    int marks;\n    @Override public int compareTo(Student other) {\n        return Integer.compare(this.marks, other.marks);\n    }\n}\nCollections.sort(students);  // uses compareTo\n\n// Comparator — external / custom ordering\nComparator<Student> byName = Comparator.comparing(s -> s.name);\nComparator<Student> byMarksDesc = Comparator.comparingInt(Student::getMarks).reversed();\nstudents.sort(byName.thenComparing(byMarksDesc));",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s3",
+    "icon": "⚡",
+    "color": "c3",
+    "dcolor": "d3",
+    "title": "Java 8+ Features",
+    "toc": "Java 8+ Features",
+    "questions": [
+      {
+        "id": "q22",
+        "question": "How do you count occurrences of a specific number in a stream?",
+        "explanation": "",
+        "code": "List<Integer> nums = Arrays.asList(1,2,1,2,1,3,4,3,2);\n\n// Count occurrences of 3\nint num = 3;\nlong count = nums.stream()\n    .filter(i -> i == num)\n    .count();  // → 2\n\n// Group all elements and count each\nMap<Integer, Long> freq = nums.stream()\n    .collect(Collectors.groupingBy(i -> i, Collectors.counting()));\n// → {1=3, 2=3, 3=2, 4=1}\n\n// Group elements into lists\nMap<Integer, List<Integer>> grouped = nums.stream()\n    .collect(Collectors.groupingBy(i -> i));\n// → {1=[1,1,1], 2=[2,2,2], 3=[3,3], 4=[4]}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q23",
+        "question": "Write common Stream API operations with examples.",
+        "explanation": "",
+        "code": "List<String> names = Arrays.asList(\"Alice\",\"Bob\",\"Charlie\",\"Dave\");\n\n// filter + map + collect\nList<String> result = names.stream()\n    .filter(n -> n.length() > 3)\n    .map(String::toUpperCase)\n    .sorted()\n    .collect(Collectors.toList());\n\n// reduce — sum all integers\nint sum = IntStream.rangeClosed(1, 10)\n    .reduce(0, Integer::sum);  // → 55\n\n// flatMap — flatten nested lists\nList<List<Integer>> nested = Arrays.asList(Arrays.asList(1,2), Arrays.asList(3,4));\nList<Integer> flat = nested.stream()\n    .flatMap(Collection::stream)\n    .collect(Collectors.toList()); // → [1, 2, 3, 4]\n\n// Collectors.toMap\nMap<String, Integer> nameLen = names.stream()\n    .collect(Collectors.toMap(n -> n, String::length));",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q24",
+        "question": "What are Lambda expressions and Functional Interfaces?",
+        "explanation": "",
+        "code": "// Functional Interface — exactly ONE abstract method\n@FunctionalInterface\ninterface Greeting { void greet(String name); }\n\n// Lambda replaces anonymous class\nGreeting g = name -> System.out.println(\"Hello, \" + name);\ng.greet(\"Alice\");\n\n// Built-in functional interfaces\nPredicate<Integer> isEven = n -> n % 2 == 0;\nFunction<String, Integer> len = String::length;\nConsumer<String> print = System.out::println;\nSupplier<String> greeting = () -> \"Hello\";\nBiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q25",
+        "question": "What is Optional? How is it used?",
+        "explanation": "",
+        "code": "// Optional — container to represent presence/absence of a value\nOptional<String> opt = Optional.of(\"hello\");\nOptional<String> empty = Optional.empty();\nOptional<String> nullable = Optional.ofNullable(getNameOrNull());\n\nopt.isPresent();                        // true\nopt.get();                              // \"hello\"\nopt.orElse(\"default\");                 // value or default\nopt.orElseThrow(RuntimeException::new); // throw if empty\nopt.map(String::toUpperCase);          // transform if present\nopt.filter(s -> s.length() > 3);       // filter\n\n// In practice\nreturn userRepo.findById(id)\n    .orElseThrow(() -> new EntityNotFoundException(\"User not found\"));",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      },
+      {
+        "id": "q26",
+        "question": "What is the volatile keyword? When is it used?",
+        "explanation": "<code>volatile</code> guarantees visibility — changes made by one thread to a volatile variable are immediately visible to all other threads (bypasses CPU cache/local memory).",
+        "code": "class Ball extends Thread {\n    int x, y;\n    static volatile boolean flag = true;  // ← visible across threads\n\n    public void run() {\n        while (flag) {\n            for (int i = 0; i < 100; i++) { x = i; draw(); }\n            for (int i = 100; i >= 0; i--) { x = i; draw(); }\n        }\n    }\n}\n// Stop button click → Thread2 sets Ball.flag = false\n// Thread1 (ball animation) sees change immediately → stops",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ volatile solves visibility but NOT atomicity. Use AtomicInteger/synchronized for compound operations.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q27",
+        "question": "What are default and static methods in interfaces (Java 8)?",
+        "explanation": "",
+        "code": "interface Vehicle {\n    void start();  // abstract — must implement\n\n    // default — provides implementation, can be overridden\n    default void fuelType() { System.out.println(\"Petrol\"); }\n\n    // static — utility, called on interface, not overridable\n    static void roadRules() { System.out.println(\"Follow traffic rules\"); }\n}\nVehicle.roadRules();  // ← called on interface directly\n\n// Resolving diamond problem with default methods\nclass Car implements A, B {\n    @Override\n    public void fun() { A.super.fun(); }  // must override if both A,B have default fun()\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s4",
+    "icon": "🧵",
+    "color": "c4",
+    "dcolor": "d4",
+    "title": "Multithreading",
+    "toc": "Multithreading",
+    "questions": [
+      {
+        "id": "q28",
+        "question": "What is multithreading? What is the difference between process and thread?",
+        "explanation": "<strong>Multithreading</strong> is the concurrent execution of two or more threads within a single process to perform multiple tasks simultaneously, improving CPU utilisation and application performance.\n\n<strong>Process</strong> — an independent program with its own memory space and resources.\n<strong>Thread</strong> — the smallest unit of execution <em>within</em> a process, sharing the same memory space with other threads of the same process.",
+        "code": "// Creating a thread — Method 1: extend Thread\nclass MyThread extends Thread {\n    public void run() {\n        System.out.println(\"Thread: \" + Thread.currentThread().getName());\n    }\n}\n\n// Method 2: implement Runnable (preferred)\nclass MyTask implements Runnable {\n    public void run() {\n        System.out.println(\"Task running\");\n    }\n}\n\nMyThread t1 = new MyThread();\nt1.start();                        // DO NOT call run() directly!\n\nThread t2 = new Thread(new MyTask());\nt2.start();",
+        "language": "java",
+        "tableHeaders": [
+          "Feature",
+          "Process",
+          "Thread"
+        ],
+        "tableRows": [
+          [
+            "Memory",
+            "Own memory space",
+            "Shared with other threads"
+          ],
+          [
+            "Creation cost",
+            "Heavy",
+            "Lightweight"
+          ],
+          [
+            "Communication",
+            "IPC (slow)",
+            "Shared memory (fast)"
+          ],
+          [
+            "Crash impact",
+            "Independent",
+            "Can crash whole process"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q29",
+        "question": "What is thread safety? What is a daemon thread?",
+        "explanation": "<strong>Thread safety</strong> ensures that shared code or objects can be accessed by multiple threads simultaneously without causing data corruption or unexpected behaviour. Achieved via synchronized blocks, volatile, Atomic classes, or concurrent collections.\n\n<strong>Daemon thread</strong> is a background thread that provides services to user threads (e.g. garbage collector). It is automatically terminated by the JVM when all user threads finish — it does not prevent JVM shutdown.",
+        "code": "// Thread-safe counter using AtomicInteger\nimport java.util.concurrent.atomic.AtomicInteger;\nAtomicInteger counter = new AtomicInteger(0);\ncounter.incrementAndGet();  // atomic, thread-safe\n\n// Daemon thread\nThread daemon = new Thread(() -> {\n    while (true) {\n        System.out.println(\"Background service...\");\n    }\n});\ndaemon.setDaemon(true);   // must be set BEFORE start()\ndaemon.start();\n// JVM exits when all user threads finish, daemon stops too",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "setDaemon(true) must be called before start(). Calling it after throws IllegalThreadStateException.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q30",
+        "question": "How do you create threads in Java? What is the difference between Thread and Runnable?",
+        "explanation": "",
+        "code": "// Method 1: extend Thread\nclass MyThread extends Thread {\n    @Override public void run() { System.out.println(\"Thread running\"); }\n}\nnew MyThread().start();\n\n// Method 2: implement Runnable (PREFERRED — still inheritable)\nThread t = new Thread(() -> System.out.println(\"Running\"));\nt.start();\n\n// Method 3: ExecutorService (best for production)\nExecutorService pool = Executors.newFixedThreadPool(5);\npool.submit(() -> System.out.println(\"Pooled task\"));\npool.shutdown();",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "✅ Prefer Runnable/ExecutorService over extending Thread — keeps class hierarchy flexible.",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q31",
+        "question": "What is synchronized? Explain race condition and deadlock.",
+        "explanation": "",
+        "code": "// Race condition — multiple threads modify shared data concurrently\nint counter = 0;\n// Thread1 and Thread2 both do counter++ → may lose updates\n\n// Fix: synchronized method\nsynchronized void increment() { counter++; }\n\n// Fix: synchronized block (better — smaller critical section)\nsynchronized (this) { counter++; }\n\n// Fix: AtomicInteger (lock-free, fastest)\nAtomicInteger counter = new AtomicInteger(0);\ncounter.incrementAndGet();\n\n// Deadlock — T1 holds A, waits B; T2 holds B, waits A\n// Prevention: always acquire locks in same ORDER\n// Detection: jstack / thread dumps",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q32",
+        "question": "What is the difference between wait(), sleep(), and yield()?",
+        "explanation": "",
+        "code": "// wait/notify pattern (Producer-Consumer)\nsynchronized void produce() throws InterruptedException {\n    while (isFull) this.wait();  // releases lock, waits\n    // ... add item ...\n    this.notifyAll();              // wakes waiting consumers\n}",
+        "language": "java",
+        "tableHeaders": [
+          "Method",
+          "Class",
+          "Releases Lock?",
+          "Woken By"
+        ],
+        "tableRows": [
+          [
+            "wait()",
+            "Object",
+            "✅ Yes",
+            "notify() / notifyAll()"
+          ],
+          [
+            "sleep(ms)",
+            "Thread",
+            "❌ No",
+            "Timer expiry"
+          ],
+          [
+            "yield()",
+            "Thread",
+            "❌ No",
+            "Scheduler (hint only)"
+          ],
+          [
+            "join()",
+            "Thread",
+            "❌ No",
+            "Other thread finishes"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q33",
+        "question": "What is Callable vs Runnable? What is Future?",
+        "explanation": "",
+        "code": "// Runnable — no return value, no checked exception\nRunnable r = () -> System.out.println(\"run\");\n\n// Callable — returns value, can throw checked exception\nCallable<Integer> c = () -> {\n    Thread.sleep(1000);\n    return 42;\n};\n\nExecutorService pool = Executors.newSingleThreadExecutor();\nFuture<Integer> future = pool.submit(c);\n\n// Future.get() blocks until result is ready\nint result = future.get();  // → 42 (after ~1 sec)\nfuture.isDone();           // check without blocking\nfuture.cancel(true);      // cancel if possible",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s5",
+    "icon": "🗄️",
+    "color": "c5",
+    "dcolor": "d5",
+    "title": "JDBC & SQL Security",
+    "toc": "JDBC & SQL",
+    "questions": [
+      {
+        "id": "q34",
+        "question": "What are the different types of SQL commands? (DDL, DML, DCL, TCL)",
+        "explanation": "SQL commands are grouped into four categories:\n\n<strong>DDL — Data Definition Language</strong>: defines/modifies structure. Commands: CREATE, ALTER, DROP, TRUNCATE, RENAME.\n\n<strong>DML — Data Manipulation Language</strong>: manipulates data. Commands: SELECT, INSERT, UPDATE, DELETE.\n\n<strong>DCL — Data Control Language</strong>: controls access. Commands: GRANT, REVOKE.\n\n<strong>TCL — Transaction Control Language</strong>: manages transactions. Commands: COMMIT, ROLLBACK, SAVEPOINT.",
+        "code": "-- DDL\nCREATE TABLE employees (id INT PRIMARY KEY, name VARCHAR(50));\nALTER TABLE employees ADD salary DECIMAL(10,2);\nDROP TABLE employees;\n\n-- DML\nINSERT INTO employees VALUES (1, 'Alice', 75000);\nSELECT * FROM employees WHERE salary > 50000;\nUPDATE employees SET salary = 80000 WHERE id = 1;\nDELETE FROM employees WHERE id = 1;\n\n-- TCL\nBEGIN;\nUPDATE accounts SET balance = balance - 500 WHERE id = 1;\nUPDATE accounts SET balance = balance + 500 WHERE id = 2;\nCOMMIT;   -- or ROLLBACK if error",
+        "language": "sql",
+        "tableHeaders": [
+          "Category",
+          "Commands",
+          "Auto-commit?"
+        ],
+        "tableRows": [
+          [
+            "DDL",
+            "CREATE, ALTER, DROP, TRUNCATE",
+            "Yes"
+          ],
+          [
+            "DML",
+            "SELECT, INSERT, UPDATE, DELETE",
+            "No (needs COMMIT)"
+          ],
+          [
+            "DCL",
+            "GRANT, REVOKE",
+            "Yes"
+          ],
+          [
+            "TCL",
+            "COMMIT, ROLLBACK, SAVEPOINT",
+            "—"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q35",
+        "question": "What is normalization? Explain 1NF, 2NF, 3NF, BCNF.",
+        "explanation": "Normalization is the process of organizing database tables to reduce data redundancy and eliminate insertion, update, and deletion anomalies by dividing larger tables into smaller, related ones.\n\n<strong>1NF (First Normal Form)</strong>: Each column contains atomic (indivisible) values; no repeating groups.\n\n<strong>2NF (Second Normal Form)</strong>: In 1NF + every non-prime attribute is fully functionally dependent on the entire primary key (no partial dependency).\n\n<strong>3NF (Third Normal Form)</strong>: In 2NF + no transitive dependency (non-prime attribute depending on another non-prime attribute).\n\n<strong>BCNF (Boyce-Codd NF)</strong>: Stricter 3NF — for every functional dependency X→Y, X must be a super key.",
+        "code": "",
+        "language": "java",
+        "tableHeaders": [
+          "Normal Form",
+          "Eliminates",
+          "Condition"
+        ],
+        "tableRows": [
+          [
+            "1NF",
+            "Repeating groups",
+            "Atomic values only"
+          ],
+          [
+            "2NF",
+            "Partial dependency",
+            "Full dependency on PK"
+          ],
+          [
+            "3NF",
+            "Transitive dependency",
+            "No non-prime → non-prime"
+          ],
+          [
+            "BCNF",
+            "Anomalies 3NF misses",
+            "Every determinant is a super key"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q36",
+        "question": "What are SQL Joins? Explain INNER, LEFT, RIGHT, FULL OUTER, and SELF JOIN.",
+        "explanation": "A JOIN combines rows from two or more tables based on a related column.\n\n<strong>INNER JOIN</strong>: returns only rows with matching values in both tables.\n<strong>LEFT JOIN</strong>: all rows from left table + matched rows from right (NULL for no match).\n<strong>RIGHT JOIN</strong>: all rows from right table + matched from left (NULL for no match).\n<strong>FULL OUTER JOIN</strong>: all rows from both tables (NULL where no match on either side).\n<strong>SELF JOIN</strong>: joins a table with itself — useful for hierarchical data.",
+        "code": "-- INNER JOIN\nSELECT e.name, d.department_name\nFROM employees e\nINNER JOIN departments d ON e.department_id = d.id;\n\n-- LEFT JOIN (all employees, even without a dept)\nSELECT e.name, d.department_name\nFROM employees e\nLEFT JOIN departments d ON e.department_id = d.id;\n\n-- SELF JOIN (employee and their manager)\nSELECT e1.name AS employee, e2.name AS manager\nFROM employees e1\nLEFT JOIN employees e2 ON e1.manager_id = e2.id;\n\n-- Flip 0↔1 in a column\nUPDATE t1 SET col1 = CASE WHEN col1 = 1 THEN 0 ELSE 1 END;",
+        "language": "sql",
+        "tableHeaders": [
+          "Join Type",
+          "Left Table",
+          "Right Table",
+          "Unmatched rows"
+        ],
+        "tableRows": [
+          [
+            "INNER",
+            "Matched only",
+            "Matched only",
+            "Excluded"
+          ],
+          [
+            "LEFT",
+            "All rows",
+            "Matched only",
+            "NULL on right"
+          ],
+          [
+            "RIGHT",
+            "Matched only",
+            "All rows",
+            "NULL on left"
+          ],
+          [
+            "FULL OUTER",
+            "All rows",
+            "All rows",
+            "NULL on both sides"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q37",
+        "question": "What is the difference between clustered and non-clustered indexes?",
+        "explanation": "An <strong>index</strong> is a data structure that speeds up data retrieval.\n\n<strong>Clustered index</strong>: physically reorders the table data to match the index. Only ONE per table. The primary key is a clustered index by default. Leaf nodes contain actual data rows.\n\n<strong>Non-clustered index</strong>: a separate structure with pointers to the actual data. Multiple allowed per table. Leaf nodes store index key + pointer to data row, not the data itself.",
+        "code": "-- Clustered index (created automatically with PRIMARY KEY)\nCREATE TABLE employees (\n    id   INT PRIMARY KEY,  -- clustered index by default\n    name VARCHAR(50)\n);\n\n-- Non-clustered index\nCREATE INDEX idx_name ON employees(name);\n\n-- Multiple non-clustered indexes are fine\nCREATE INDEX idx_dept ON employees(department_id);",
+        "language": "sql",
+        "tableHeaders": [
+          "Feature",
+          "Clustered",
+          "Non-Clustered"
+        ],
+        "tableRows": [
+          [
+            "Count per table",
+            "Only 1",
+            "Multiple"
+          ],
+          [
+            "Data storage",
+            "Table IS the index",
+            "Separate structure + pointer"
+          ],
+          [
+            "Speed (PK lookup)",
+            "Fastest",
+            "Slightly slower"
+          ],
+          [
+            "Default for",
+            "PRIMARY KEY",
+            "Other indexed columns"
+          ],
+          [
+            "Size",
+            "Large (is the data)",
+            "Smaller (key + pointer)"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q38",
+        "question": "What is SQL Injection? How do you prevent it?",
+        "explanation": "SQL Injection occurs when user input is directly concatenated into SQL strings, allowing attackers to alter the query logic.",
+        "code": "// ❌ VULNERABLE — string concatenation\nString id = request.getParameter(\"id\"); // attacker enters: \"2 OR 1=1\"\nString sql = \"SELECT * FROM users WHERE id = \" + id;\n// Query becomes: SELECT * FROM users WHERE id = 2 OR 1=1\n// 1=1 is always TRUE → ALL records returned!\n\n// ✅ FIX 1: PreparedStatement (parameterized query)\nString sql = \"SELECT * FROM users WHERE id = ?\";\nPreparedStatement ps = con.prepareStatement(sql);\nps.setInt(1, Integer.parseInt(id));  // input escaped safely\nResultSet rs = ps.executeQuery();\n\n// ✅ FIX 2: CallableStatement (Stored Procedure)\nCallableStatement cs = con.prepareCall(\"{call get_user(?)}\");\ncs.setInt(1, userId);\n\n// ✅ FIX 3: JPA/Hibernate parameterized JPQL (internally uses PreparedStatement)\nTypedQuery<User> q = em.createQuery(\"FROM User u WHERE u.id = :id\", User.class);\nq.setParameter(\"id\", userId);",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "⚠ Never use string concatenation with user input in SQL queries!",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q39",
+        "question": "What is the difference between Statement, PreparedStatement, and CallableStatement?",
+        "explanation": "",
+        "code": "",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "Statement",
+          "PreparedStatement",
+          "CallableStatement"
+        ],
+        "tableRows": [
+          [
+            "Use for",
+            "Static SQL",
+            "Parameterized SQL",
+            "Stored procedures"
+          ],
+          [
+            "SQL injection",
+            "❌ Vulnerable",
+            "✅ Protected",
+            "✅ Protected"
+          ],
+          [
+            "Performance",
+            "Compiled each time",
+            "Pre-compiled ✅",
+            "Pre-compiled ✅"
+          ],
+          [
+            "Reusable",
+            "❌",
+            "✅",
+            "✅"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      },
+      {
+        "id": "q40",
+        "question": "What are ACID properties in database transactions?",
+        "explanation": "",
+        "code": "// A — Atomicity:  all-or-nothing. Commit or Rollback.\n// C — Consistency: data is always valid before & after transaction.\n// I — Isolation:  concurrent transactions don't see partial changes.\n// D — Durability:  committed data persists even after crash.\n\n// JDBC transaction example\nConnection con = ...;\ncon.setAutoCommit(false);         // start transaction\ntry {\n    orderDao.save(order);\n    paymentDao.save(payment);\n    inventoryDao.update(stock);\n    con.commit();                    // all succeed → commit\n} catch (Exception e) {\n    con.rollback();                   // any fail → rollback all\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s6",
+    "icon": "🌐",
+    "color": "c6",
+    "dcolor": "d6",
+    "title": "Servlet & JSP",
+    "toc": "Servlet & JSP",
+    "questions": [
+      {
+        "id": "q41",
+        "question": "Explain the Servlet life cycle.",
+        "explanation": "Managed by the Web Container. Steps:",
+        "code": "// 1. LOAD CLASS — class loaded, object created (once per webapp)\n// 2. INIT — init() called once. Setup resources.\n// 3. SERVICE — service() called per request → dispatches to doGet/doPost\n// 4. DESTROY — destroy() called on undeploy/shutdown. Release resources.\n\npublic class MyServlet extends HttpServlet {\n    @Override\n    public void init() throws ServletException {\n        // one-time initialization\n    }\n    @Override\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {\n        // handle GET request\n    }\n    @Override\n    public void destroy() {\n        // cleanup resources\n    }\n}\n// Eager loading: <load-on-startup>1</load-on-startup>\n// E.g. Spring MVC DispatcherServlet uses eager loading",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q42",
+        "question": "What is the difference between sendRedirect() and RequestDispatcher forward()?",
+        "explanation": "",
+        "code": "// HTTP REDIRECT — two round-trips, client sees new URL (302)\nresp.sendRedirect(\"newPage.jsp\");\n// Spring: return \"redirect:/newPage\";\n// Browser makes 2nd request → URL changes in browser bar\n\n// FORWARD — server-side, one round-trip, URL unchanged\nRequestDispatcher rd = req.getRequestDispatcher(\"view.jsp\");\nrd.forward(req, resp);\n// Spring: return \"forward:/view\";\n// Client sees original URL — request attributes preserved\n\n// INCLUDE — include another resource's output in response\nrd.include(req, resp);\n// Both resources contribute to the response",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "sendRedirect",
+          "forward",
+          "include"
+        ],
+        "tableRows": [
+          [
+            "Round trips",
+            "2",
+            "1",
+            "1"
+          ],
+          [
+            "URL bar changes",
+            "✅",
+            "❌",
+            "❌"
+          ],
+          [
+            "Request attributes",
+            "Lost",
+            "Preserved",
+            "Preserved"
+          ],
+          [
+            "Cross-domain",
+            "✅",
+            "❌",
+            "❌"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q43",
+        "question": "What is session tracking? How does it work with cookies?",
+        "explanation": "HTTP is stateless. Session tracking links multiple requests from the same user to maintain state.",
+        "code": "// Server creates session → sends JSESSIONID cookie to browser\nHttpSession session = req.getSession();  // creates or retrieves session\nsession.setAttribute(\"user\", loggedInUser);\nsession.setMaxInactiveInterval(30 * 60);  // 30 minutes timeout\n\n// Subsequent requests: browser sends JSESSIONID cookie\n// Server maps JSESSIONID → HttpSession object → correct user\n\n// Invalidate session on logout\nsession.invalidate();\n\n// State management options:\n// Client side: Cookie, SessionStorage, Hidden form fields\n// Server side: HttpSession, ServletContext, Request attributes\n// Session ID tracking: Cookie (default) or URL rewriting",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q44",
+        "question": "What is the JSP life cycle?",
+        "explanation": "",
+        "code": "// JSP life cycle (managed by JSP Engine + Servlet Engine)\n// 1. TRANSLATION — .jsp file → servlet.java\n// 2. COMPILATION  — servlet.java → servlet.class\n// 3. INSTANTIATION — servlet object created\n// 4. INITIALIZATION — jspInit() called\n// 5. REQUEST HANDLING — _jspService() (equivalent to service())\n// 6. DESTRUCTION — jspDestroy() called on undeploy\n\n// Steps 1-2 happen only ONCE (first request or on change)\n// Steps 3-6 follow same lifecycle as Servlet\n\n// JSP implicit objects\n// request, response, session, application, out\n// config, pageContext, page, exception",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s7",
+    "icon": "🍃",
+    "color": "c7",
+    "dcolor": "d7",
+    "title": "Spring Core & Boot",
+    "toc": "Spring Core & Boot",
+    "questions": [
+      {
+        "id": "q45",
+        "question": "What is Dependency Injection? What are its types?",
+        "explanation": "Dependency Injection (DI) means an object's dependencies are provided externally rather than the object creating them itself. This removes coupling and improves testability.",
+        "code": "// WITHOUT DI — tightly coupled\nclass Car {\n    Engine engine = new PetrolEngine(); // Car creates its own dependency\n}\n\n// WITH DI — loosely coupled\n// Type 1: Constructor injection (PREFERRED by Spring Boot)\n@Component\nclass Car {\n    private final Engine engine;\n    public Car(Engine engine) { this.engine = engine; }\n}\n\n// Type 2: Setter injection\n@Autowired public void setEngine(Engine e) { this.engine = e; }\n\n// Type 3: Field injection (not recommended)\n@Autowired private Engine engine;\n\n// @Value — inject from application.properties\n@Value(\"${server.port}\") private int port;",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "✅ Spring Boot prefers constructor injection — makes dependencies explicit, easier to test.",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q46",
+        "question": "Explain the Spring Bean life cycle in order.",
+        "explanation": "",
+        "code": "@Component\nclass MyBean implements BeanNameAware, ApplicationContextAware,\n                          InitializingBean, DisposableBean {\n\n    public MyBean() { }  // ① Instantiation (Constructor)\n                          // ② Set properties (DI — @Autowired fields/setters)\n\n    public void setBeanName(String name) { }       // ③ BeanNameAware\n    public void setApplicationContext(ApplicationContext ctx) { }  // ④\n    // ⑤ BeanPostProcessor.postProcessBeforeInitialization() [external]\n\n    @PostConstruct\n    public void init() { }     // ⑥ Custom init (@PostConstruct)\n\n    public void afterPropertiesSet() { }  // ⑦ InitializingBean\n    // ⑧ BeanPostProcessor.postProcessAfterInitialization()\n    // ⑧ Bean is READY to use\n\n    @PreDestroy\n    public void cleanup() { }  // ① Destroy: @PreDestroy\n    public void destroy() { }  // ② DisposableBean.destroy()\n                                  // ③ Object.finalize() → GC\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q47",
+        "question": "What are bean scopes? What is the singleton vs prototype issue?",
+        "explanation": "",
+        "code": "@Scope(\"singleton\") // default — one instance per Spring container\n@Scope(\"prototype\") // new instance per injection / getBean() call\n@Scope(\"request\")   // new instance per HTTP request\n@Scope(\"session\")   // new instance per HTTP session\n\n// PROBLEM: prototype bean inside singleton bean\n// Singleton created once → prototype injected ONCE → always same prototype!\n@Scope(\"singleton\") @Component\nclass Outer {\n    @Autowired Inner inner;  // ← always same Inner instance!\n    Inner getInner() { return inner; }  // BAD if Inner is prototype\n}\n\n// SOLUTION 1: ApplicationContextAware\nInner getInner() { return ctx.getBean(Inner.class); }  // new each time\n\n// SOLUTION 2: @Lookup (Spring proxies the method)\n@Lookup\npublic Inner getInner() { return null; }  // Spring replaces body!",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q48",
+        "question": "What is @Transactional? How does it work internally?",
+        "explanation": "",
+        "code": "@Service\nclass OrderService {\n    @Transactional\n    public void placeOrder(Order o) {\n        orderDao.save(o);       // all 3 succeed or ALL rollback\n        paymentDao.save(p);\n        inventoryDao.update(s);\n    }\n}\n\n// HOW IT WORKS (Spring AOP Proxy pattern):\n// 1. Spring wraps @Transactional beans in a Proxy\n// 2. Proxy intercepts method call → START transaction\n// 3. Calls actual method\n// 4. If success → COMMIT\n// 5. If RuntimeException thrown → ROLLBACK\n\n// Propagation levels\n@Transactional(propagation = Propagation.REQUIRED)     // default, join existing\n@Transactional(propagation = Propagation.REQUIRES_NEW) // always new transaction\n@Transactional(rollbackFor = Exception.class)          // rollback on checked too",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ @Transactional only rolls back on RuntimeException by default. Use rollbackFor=Exception.class for checked exceptions.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q49",
+        "question": "What is AOP? Explain its terminologies.",
+        "explanation": "Aspect-Oriented Programming separates cross-cutting concerns (logging, security, transactions) from business logic.",
+        "code": "@Aspect @Component\nclass LoggingAspect {\n\n    // Pointcut — defines WHERE advice applies\n    @Pointcut(\"execution(* com.app.service.*.*(..))\")\n    public void serviceMethods() {}\n\n    @Before(\"serviceMethods()\")              // runs BEFORE method\n    public void logBefore(JoinPoint jp) {\n        System.out.println(\"Calling: \" + jp.getSignature());\n    }\n\n    @AfterReturning(pointcut=\"serviceMethods()\", returning=\"result\")\n    public void logAfter(Object result) { // after success }\n\n    @AfterThrowing(pointcut=\"serviceMethods()\", throwing=\"ex\")\n    public void logException(Exception ex) { // after exception }\n\n    @Around(\"serviceMethods()\")             // wraps method (most powerful)\n    public Object time(ProceedingJoinPoint pjp) throws Throwable {\n        long start = System.currentTimeMillis();\n        Object result = pjp.proceed();      // invoke actual method\n        System.out.println(\"Time: \" + (System.currentTimeMillis() - start) + \"ms\");\n        return result;\n    }\n}",
+        "language": "java",
+        "tableHeaders": [
+          "Term",
+          "Meaning"
+        ],
+        "tableRows": [
+          [
+            "Aspect",
+            "Class containing advice methods (@Aspect)"
+          ],
+          [
+            "Advice",
+            "The action: @Before, @After, @Around, etc."
+          ],
+          [
+            "Pointcut",
+            "Expression selecting which join points to apply advice"
+          ],
+          [
+            "JoinPoint",
+            "Specific method execution where advice runs"
+          ],
+          [
+            "Target",
+            "Object whose method is being advised"
+          ],
+          [
+            "Proxy",
+            "AOP proxy wrapping the target object"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q50",
+        "question": "What is @SpringBootApplication? What does it do?",
+        "explanation": "",
+        "code": "// @SpringBootApplication = @ComponentScan + @Configuration + @EnableAutoConfiguration\n\n@SpringBootApplication\npublic class MyApp {\n    public static void main(String[] args) {\n        SpringApplication.run(MyApp.class, args);\n    }\n}\n\n// @ComponentScan — auto-detects @Component, @Service, @Repository, @Controller\n//                  in current package and sub-packages\n\n// @Configuration — marks class as source of @Bean definitions\n\n// @EnableAutoConfiguration — auto-configures beans based on classpath\n//   → If spring-data-jpa on classpath → auto-creates DataSource, EntityManager\n//   → If spring-web on classpath → auto-creates DispatcherServlet\n//   Uses @ConditionalOnClass, @ConditionalOnMissingBean internally\n\n// SpringApplication.run() — creates ApplicationContext,\n// loads all singleton beans, starts embedded Tomcat, runs CommandLineRunner",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "✅ Spring Boot = Spring Framework + Embedded Web Server + Auto-Configuration − XML config − Jar conflicts",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q51",
+        "question": "What is autowiring? What are the types?",
+        "explanation": "",
+        "code": "// Autowiring = Spring automatically injects matching bean\n\n// XML config autowiring types: byType, byName, constructor, autodetect\n\n// Annotation-based @Autowired\n@Component class UserService {\n    // By type (default) — finds bean of matching type\n    @Autowired private UserRepository repo;\n\n    // By name — use @Qualifier when multiple beans of same type\n    @Autowired @Qualifier(\"mysqlRepo\") private UserRepository repo;\n\n    // @Primary — mark preferred bean when multiple candidates exist\n}\n\n// Required = false → no error if no matching bean found\n@Autowired(required = false) private OptionalService svc;",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q52",
+        "question": "What is the difference between @Component, @Service, @Repository, @Controller?",
+        "explanation": "",
+        "code": "// All are specializations of @Component (auto-detected by @ComponentScan)\n// Differ only in semantics and extra features:\n\n@Component   // generic Spring bean\n@Service     // service/business layer — may add transaction support\n@Repository  // DAO/persistence layer — adds automatic DataAccessException translation\n@Controller  // Spring MVC controller — handles HTTP requests\n@RestController // @Controller + @ResponseBody — for REST APIs\n\n// Layered architecture\n// @Controller → @Service → @Repository → DB",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q53",
+        "question": "How do you deploy a Spring Boot application on AWS EC2?",
+        "explanation": "",
+        "code": "// Steps to deploy Spring Boot app on AWS Ubuntu EC2\n\n// 1. Create EC2 instance (Ubuntu)\n// 2. Configure Security Group: open port 8080 inbound\n\n// 3. SSH into instance and install JDK\n// $ sudo apt update && sudo apt install openjdk-17-jdk -y\n\n// 4. Install MySQL (if needed)\n// $ sudo apt install mysql-server -y\n\n// 5. Update application.properties with DB URL/credentials\n\n// 6. Copy JAR to server (scp / GitHub CI-CD)\n// $ scp -i key.pem app.jar ubuntu@ec2-ip:/home/ubuntu/\n\n// 7. Run with nohup (keeps running after terminal closes)\n// $ nohup java -jar app.jar &\n// nohup = \"no hangup\" → ignores SIGHUP signal\n// & = run in background\n\n// 8. Check logs\n// $ tail -f nohup.out",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q54",
+        "question": "What is the Spring Bean PostProcessor? How is it different from init()?",
+        "explanation": "",
+        "code": "// BeanPostProcessor — EXTERNAL to the bean class\n// Intercepts ALL beans during initialization phase\n\n@Component\nclass MyPostProcessor implements BeanPostProcessor {\n    public Object postProcessBeforeInitialization(Object bean, String name) {\n        // runs BEFORE @PostConstruct / afterPropertiesSet()\n        System.out.println(\"Before init: \" + name);\n        return bean;\n    }\n    public Object postProcessAfterInitialization(Object bean, String name) {\n        // runs AFTER @PostConstruct / afterPropertiesSet()\n        System.out.println(\"After init: \" + name);\n        return bean; // can return wrapped proxy!\n    }\n}\n// Used by: Spring AOP (creates proxies), Spring Security, Spring Data",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s8",
+    "icon": "🐘",
+    "color": "c8",
+    "dcolor": "d8",
+    "title": "Hibernate & JPA",
+    "toc": "Hibernate & JPA",
+    "questions": [
+      {
+        "id": "q55",
+        "question": "Explain Hibernate Entity lifecycle states.",
+        "explanation": "",
+        "code": "// 4 States of a Hibernate Entity\n\n// 1. TRANSIENT (New) — created with new, not associated with session\nUser u = new User(); u.setName(\"Alice\");  // transient\n\n// 2. PERSISTENT (Managed) — in session cache, tracked by Hibernate\nsession.persist(u);  // now persistent → changes auto-synced on commit\nu.setEmail(\"a@b.com\");  // dirty checking → UPDATE on commit\n\n// 3. DETACHED — removed from session (session closed/clear/evict)\nsession.close();  // or: session.evict(u), session.detach(u), session.clear()\nu.setName(\"Bob\"); // NOT tracked, NOT updated in DB\n\n// Re-attach: saveOrUpdate() or merge()\nsession.merge(u);  // copies state into new persistent instance\n\n// 4. REMOVED — scheduled for deletion\nsession.remove(u);  // DELETE on commit",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q56",
+        "question": "What is the difference between get(), load(), save(), persist(), merge(), and update()?",
+        "explanation": "",
+        "code": "// FETCH methods\nem.find(User.class, 1);   // get() → hits DB, returns null if not found\nsession.get(User.class, 1); // same as find()\nsession.load(User.class,1); // returns PROXY (lazy), throws if not found on access\n\n// SAVE methods\nsession.save(user);    // Hibernate-only, returns PK, INSERT immediately\nem.persist(user);     // JPA standard, INSERT on commit\n\n// UPDATE methods\nsession.update(user); // re-attach detached, assumes ID exists\nem.merge(user);       // JPA standard: SELECT then INSERT/UPDATE, returns new instance\nsession.saveOrUpdate(user); // save if new, update if exists\n\n// REMOVE methods\nem.remove(user);       // JPA standard DELETE\nsession.delete(user);  // Hibernate-only\n\n// SESSION CACHE methods\nsession.evict(user);   // detach one entity\nem.detach(user);       // JPA standard detach\nsession.clear();       // detach ALL entities\nsession.refresh(user); // re-fetch from DB, overwrites in-memory state",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q57",
+        "question": "What is lazy vs eager loading? What is the N+1 problem?",
+        "explanation": "",
+        "code": "// EAGER — fetch associated data immediately with SELECT JOIN\n@ManyToOne(fetch = FetchType.EAGER)   // default for @ManyToOne\nprivate Department dept;\n\n// LAZY — fetch associated data ONLY when accessed (proxy)\n@OneToMany(fetch = FetchType.LAZY)    // default for @OneToMany\nprivate List<Employee> employees;\n\n// N+1 Problem — 1 query for departments + N queries for each dept's employees\nList<Department> depts = repo.findAll();  // 1 query\ndepts.forEach(d -> d.getEmployees().size()); // N queries!\n\n// Fix: JOIN FETCH in JPQL\n\"SELECT d FROM Department d LEFT JOIN FETCH d.employees\"\n\n// Fix: @EntityGraph\n@EntityGraph(attributePaths = {\"employees\"})\nList<Department> findAll();",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "⚠ N+1 is one of the most common Hibernate performance issues in interviews!",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q58",
+        "question": "What are Cascade types? Explain with example.",
+        "explanation": "",
+        "code": "@Entity class Department {\n    @OneToMany(cascade = CascadeType.ALL, mappedBy = \"dept\")\n    private List<Employee> empList;\n}\n\n// CascadeType.PERSIST — em.persist(dept) → also persists all employees\n// CascadeType.MERGE   — em.merge(dept)   → also merges all employees\n// CascadeType.REMOVE  — em.remove(dept)  → also removes all employees\n// CascadeType.DETACH  — em.detach(dept)  → also detaches all employees\n// CascadeType.REFRESH — em.refresh(dept) → also refreshes all employees\n// CascadeType.ALL     — all of the above\n\n// Without cascade — must manually manage child entities:\nfor (Employee e : dept.getEmpList()) { em.persist(e); }\nem.persist(dept);",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q59",
+        "question": "How do you implement a ManyToMany relationship in Hibernate?",
+        "explanation": "",
+        "code": "// Employee ↔ Meeting (many-to-many)\n@Entity\nclass Employee {\n    @Id private int empId;\n    private String name;\n\n    @ManyToMany\n    @JoinTable(\n        name = \"emp_meeting\",\n        joinColumns        = @JoinColumn(name = \"emp_id\"),\n        inverseJoinColumns = @JoinColumn(name = \"meet_id\")\n    )\n    private List<Meeting> meetList;\n}\n\n@Entity\nclass Meeting {\n    @Id private int meetId;\n    private String topic, venue;\n\n    @ManyToMany(mappedBy = \"meetList\")  // ← inverse side, no join table here\n    private List<Employee> empList;\n}\n\n// DB tables: employee, meeting, emp_meeting(emp_id, meet_id)",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q60",
+        "question": "What is Hibernate caching? Explain L1 and L2 cache.",
+        "explanation": "",
+        "code": "// L1 Cache (Session Cache) — ALWAYS enabled, per-session\nSession s = factory.openSession();\nUser u1 = s.find(User.class, 1); // DB hit\nUser u2 = s.find(User.class, 1); // L1 cache hit — no DB query!\n// L1 cleared when session is closed/cleared/evicted\n\n// L2 Cache (SessionFactory Cache) — OPTIONAL, cross-session\n// Needs external provider: EhCache, Redis, Infinispan\n@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)\n@Entity class Product { ... }  // ← mark entity as cacheable\n\n// application.properties\n// spring.jpa.properties.hibernate.cache.use_second_level_cache=true\n// spring.jpa.properties.hibernate.cache.region.factory_class=...",
+        "language": "java",
+        "tableHeaders": [
+          "",
+          "L1 (Session)",
+          "L2 (SessionFactory)"
+        ],
+        "tableRows": [
+          [
+            "Scope",
+            "Single session",
+            "All sessions"
+          ],
+          [
+            "Always enabled",
+            "✅",
+            "❌ (opt-in)"
+          ],
+          [
+            "Shared across users",
+            "❌",
+            "✅"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q61",
+        "question": "What is dirty checking in Hibernate?",
+        "explanation": "",
+        "code": "// Hibernate tracks state of PERSISTENT entities\n// On transaction commit, compares current state to snapshot\n// If different → automatically issues UPDATE SQL\n\n@Transactional\npublic void updateUser(int id) {\n    User user = em.find(User.class, id);  // becomes PERSISTENT\n    user.setName(\"NewName\");  // no explicit save() needed!\n    // On commit → Hibernate detects change → UPDATE SQL fired automatically\n}\n// NO need to call session.update() for managed entities",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "✅ Dirty checking is why you don't need to explicitly call update() in a @Transactional service method.",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q62",
+        "question": "What is Spring Data JPA? How does it work?",
+        "explanation": "",
+        "code": "// Spring Data JPA auto-generates repository implementations\n\n@Repository\npublic interface UserRepository extends JpaRepository<User, Long> {\n\n    // Derived query — Spring generates SELECT FROM User WHERE email = ?\n    Optional<User> findByEmail(String email);\n\n    // Custom JPQL query\n    @Query(\"SELECT u FROM User u WHERE u.age > :age\")\n    List<User> findUsersOlderThan(@Param(\"age\") int age);\n\n    // Custom native SQL\n    @Query(value = \"SELECT * FROM users WHERE city = ?1\", nativeQuery = true)\n    List<User> findByCity(String city);\n}\n// JpaRepository provides: save, findById, findAll, delete, count, existsById, flush...\n// Spring Boot auto-configures DataSource + EntityManagerFactory + TransactionManager",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q63",
+        "question": "What is the Hibernate load() method? How does it use proxies?",
+        "explanation": "",
+        "code": "// load() returns a PROXY — no DB query until field accessed\nUser proxy = session.load(User.class, 1);  // NO DB hit yet!\nproxy.getId();                              // NO DB hit (ID already known)\nproxy.getName();                            // DB hit NOW → fetches full record\n// If record doesn't exist → ObjectNotFoundException on first field access\n\n// Java Proxy mechanism used by Hibernate:\n// 1. JDK Dynamic Proxy  — for interface-based proxies (uses java.lang.reflect.Proxy)\n// 2. Class-based Proxy  — for concrete classes (uses CGLIB or ByteBuddy)\n\n// load() vs get():\n// get() → hits DB immediately, returns null if not found\n// load()→ returns proxy, throws exception if not found on access",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s9",
+    "icon": "🔗",
+    "color": "c9",
+    "dcolor": "d9",
+    "title": "Spring MVC & REST",
+    "toc": "Spring MVC & REST",
+    "questions": [
+      {
+        "id": "q64",
+        "question": "What is MVC Architecture?",
+        "explanation": "MVC (Model-View-Controller) is an architectural pattern that separates an application into three layers:\n\n<strong>Model</strong> — handles data and business logic; interacts with the database.\n<strong>View</strong> — UI layer; renders data received from the Controller.\n<strong>Controller</strong> — handles incoming requests, instructs the Model, selects the View.\n\nBenefits: separation of concerns, easier testing, parallel development, reusability.",
+        "code": "// Spring MVC example\n@Controller\npublic class ProductController {\n\n    @Autowired\n    private ProductService service;  // Model layer\n\n    @GetMapping(\"/products\")\n    public String listProducts(Model model) {\n        model.addAttribute(\"products\", service.findAll());\n        return \"product-list\";  // View name (Thymeleaf template)\n    }\n\n    @PostMapping(\"/products\")\n    public String addProduct(@ModelAttribute Product p) {\n        service.save(p);\n        return \"redirect:/products\";\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q65",
+        "question": "What is statelessness in REST? What are the RESTful design principles?",
+        "explanation": "<strong>Statelessness</strong>: each request from client to server must contain ALL information needed to process it. The server stores no client session state between requests. This makes the system scalable, reliable, and easy to maintain.\n\n<strong>RESTful design principles (6 constraints):</strong>\n1. <strong>Uniform Interface</strong> — consistent resource naming + HTTP methods.\n2. <strong>Client-Server</strong> — separation of UI and data storage concerns.\n3. <strong>Statelessness</strong> — no session on server side.\n4. <strong>Cacheable</strong> — responses can be cached for better performance.\n5. <strong>Layered System</strong> — intermediaries (load balancers, gateways) can exist transparently.\n6. <strong>Code on Demand (optional)</strong> — server can send executable code to client.",
+        "code": "",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "Idempotent methods: GET, PUT, DELETE, HEAD, OPTIONS. Non-idempotent: POST (each call may create a new resource).",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q66",
+        "question": "What is the difference between REST and SOAP? How do you choose?",
+        "explanation": "<strong>REST</strong> (Representational State Transfer) is an architectural style using HTTP, JSON/XML, lightweight, stateless. Preferred for public APIs and web services.\n\n<strong>SOAP</strong> (Simple Object Access Protocol) is a protocol with strict contracts (WSDL), XML-only, supports WS-Security. Preferred for enterprise/banking systems needing high security and formal contracts.",
+        "code": "",
+        "language": "java",
+        "tableHeaders": [
+          "Feature",
+          "REST",
+          "SOAP"
+        ],
+        "tableRows": [
+          [
+            "Format",
+            "JSON / XML",
+            "XML only"
+          ],
+          [
+            "Contract",
+            "None required",
+            "Strict WSDL"
+          ],
+          [
+            "State",
+            "Stateless",
+            "Can be stateful"
+          ],
+          [
+            "Security",
+            "HTTPS + JWT",
+            "WS-Security (stronger)"
+          ],
+          [
+            "Performance",
+            "Fast, lightweight",
+            "Slower, XML overhead"
+          ],
+          [
+            "Best for",
+            "Web/Mobile APIs",
+            "Enterprise, banking"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      },
+      {
+        "id": "q67",
+        "question": "Explain Spring MVC request processing flow.",
+        "explanation": "",
+        "code": "// Request: GET /welcome\n// 1. DispatcherServlet (Front Controller) receives request\n// 2. Consults HandlerMapping → finds @GetMapping(\"/welcome\") in controller\n// 3. HandlerAdapter invokes controller method\n// 4. Controller processes business logic → returns ModelAndView(\"welcome\")\n// 5. DispatcherServlet asks ViewResolver → \"/WEB-INF/views/\" + \"welcome\" + \".jsp\"\n// 6. View rendered → HTML response sent back to client\n\n@Controller\nclass WelcomeController {\n    @GetMapping(\"/welcome\")\n    public String welcome(Model model) {\n        model.addAttribute(\"msg\", \"Hello!\");\n        return \"welcome\";  // view name\n    }\n}\n\n// InternalResourceViewResolver config\n// prefix: /WEB-INF/views/,  suffix: .jsp\n// \"welcome\" → /WEB-INF/views/welcome.jsp",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q68",
+        "question": "What is REST? Explain HTTP methods used in REST APIs.",
+        "explanation": "",
+        "code": "// REST = Representational State Transfer\n// Stateless, uses HTTP, data transferred as JSON/XML (state of object)\n\n// HTTP Methods → CRUD mapping\n// GET    /books      → get all books (SELECT *)\n// GET    /books/22   → get book by id (SELECT WHERE id=22)\n// POST   /books      → create new book (INSERT)\n// PUT    /books/22   → update book 22 (full UPDATE)\n// PATCH  /books/22   → partial update (UPDATE specific fields)\n// DELETE /books/22   → delete book 22 (DELETE)\n\n@RestController\n@RequestMapping(\"/books\")\nclass BookController {\n    @GetMapping                    public List<Book> all() { ... }\n    @GetMapping(\"/{id}\")           public Book one(@PathVariable int id) { ... }\n    @PostMapping                   public Book create(@RequestBody Book b) { ... }\n    @PutMapping(\"/{id}\")           public Book update(@PathVariable int id, @RequestBody Book b) { ... }\n    @DeleteMapping(\"/{id}\")        public void delete(@PathVariable int id) { ... }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ REST is lighter than SOAP — no WSDL, no envelope, just HTTP + JSON. Any language/platform can consume it.",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q69",
+        "question": "What is CORS? When and how do you configure it?",
+        "explanation": "CORS (Cross-Origin Resource Sharing) is needed when a browser app makes HTTP requests to a <strong>different origin</strong> (different domain/port/protocol) than the one that served the web page.",
+        "code": "// NOT needed: frontend (8080) and backend (8080) → same origin\n// NEEDED:  React dev server (3001) → Spring Boot API (8080)\n\n// Browser blocks cross-origin requests by default (Same-Origin Policy)\n// Server must add: Access-Control-Allow-Origin header in response\n\n// Method 1: @CrossOrigin on controller\n@CrossOrigin(origins = \"http://localhost:3001\")\n@RestController class BookController { ... }\n\n// Method 2: Global config (recommended)\n@Configuration\nclass WebConfig implements WebMvcConfigurer {\n    @Override\n    public void addCorsMappings(CorsRegistry registry) {\n        registry.addMapping(\"/**\")\n            .allowedOrigins(\"http://localhost:3001\")\n            .allowedMethods(\"GET\", \"POST\", \"PUT\", \"DELETE\")\n            .allowedHeaders(\"*\");\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q70",
+        "question": "What is the difference between @Controller and @RestController?",
+        "explanation": "",
+        "code": "// @Controller — returns view name (for MVC with JSP/Thymeleaf)\n@Controller\nclass PageController {\n    @GetMapping(\"/home\")\n    public String home(Model m) {\n        m.addAttribute(\"name\", \"Alice\");\n        return \"home\";  // → home.html/jsp\n    }\n    @GetMapping(\"/api/user\")\n    @ResponseBody                          // ← needed for JSON from @Controller\n    public User getUser() { ... }\n}\n\n// @RestController = @Controller + @ResponseBody on EVERY method\n@RestController\nclass UserController {\n    @GetMapping(\"/users\")\n    public List<User> all() { ... }  // auto-serialized to JSON\n}\n\n// ResponseEntity — full control over status code + headers + body\npublic ResponseEntity<User> createUser(@RequestBody User u) {\n    User saved = service.save(u);\n    return ResponseEntity.status(HttpStatus.CREATED).body(saved);  // 201\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q71",
+        "question": "How does @RequestBody and @ResponseBody work? What is Jackson?",
+        "explanation": "",
+        "code": "// Jackson — JSON serialization/deserialization library used by Spring\n\n// @RequestBody — HTTP request body (JSON) → Java object (via Jackson)\n@PostMapping(\"/users\")\npublic User create(@RequestBody User user) {\n    // JSON body: {\"name\":\"Alice\",\"age\":30} → User POJO\n    return service.save(user);\n}\n\n// @ResponseBody — Java object → JSON (via Jackson)\n// (implicit in @RestController)\n\n// Jackson annotations\n@JsonIgnore            // exclude field from JSON\n@JsonProperty(\"user_name\")  // custom JSON field name\n@JsonInclude(Include.NON_NULL)  // exclude null fields\n\n// Content negotiation — Jackson handles multiple formats\n// Accept: application/json  → Jackson produces JSON\n// Accept: application/xml   → Jackson produces XML",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q72",
+        "question": "What are common HTTP response status codes?",
+        "explanation": "",
+        "code": "",
+        "language": "java",
+        "tableHeaders": [
+          "Code",
+          "Name",
+          "Use Case"
+        ],
+        "tableRows": [
+          [
+            "200",
+            "OK",
+            "Successful GET/PUT/DELETE"
+          ],
+          [
+            "201",
+            "Created",
+            "Successful POST (resource created)"
+          ],
+          [
+            "204",
+            "No Content",
+            "Successful DELETE (no body)"
+          ],
+          [
+            "301/302",
+            "Redirect",
+            "Permanent/temporary redirect"
+          ],
+          [
+            "400",
+            "Bad Request",
+            "Invalid input/validation error"
+          ],
+          [
+            "401",
+            "Unauthorized",
+            "Not authenticated"
+          ],
+          [
+            "403",
+            "Forbidden",
+            "Authenticated but no permission"
+          ],
+          [
+            "404",
+            "Not Found",
+            "Resource doesn't exist"
+          ],
+          [
+            "500",
+            "Internal Server Error",
+            "Server-side exception"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q73",
+        "question": "What is global exception handling in Spring? What is @ControllerAdvice?",
+        "explanation": "",
+        "code": "@RestControllerAdvice  // = @ControllerAdvice + @ResponseBody\nclass GlobalExceptionHandler {\n\n    @ExceptionHandler(EntityNotFoundException.class)\n    public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex) {\n        return ResponseEntity.status(HttpStatus.NOT_FOUND)\n            .body(new ErrorResponse(404, ex.getMessage()));\n    }\n\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ResponseEntity<Map<String,String>> handleValidation(MethodArgumentNotValidException ex) {\n        Map<String,String> errors = new HashMap<>();\n        ex.getBindingResult().getFieldErrors()\n            .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));\n        return ResponseEntity.badRequest().body(errors);\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "s10",
+    "icon": "🔐",
+    "color": "c10",
+    "dcolor": "d10",
+    "title": "Spring Security & JWT",
+    "toc": "Spring Security",
+    "questions": [
+      {
+        "id": "q74",
+        "question": "What is Authentication vs Authorization? What is a Principal?",
+        "explanation": "",
+        "code": "// Authentication types:\n// Knowledge-based: username+password, PIN, security question\n// Possession-based: OTP, smart card, phone\n// Two-factor (2FA): ATM card + PIN, phone OTP + password",
+        "language": "java",
+        "tableHeaders": [
+          "Concept",
+          "Question Answered",
+          "Example"
+        ],
+        "tableRows": [
+          [
+            "Authentication",
+            "Who are you?",
+            "Login with username + password"
+          ],
+          [
+            "Authorization",
+            "What are you allowed?",
+            "Admin can delete, user can only read"
+          ],
+          [
+            "Principal",
+            "Authenticated user identity",
+            "UserDetails object in SecurityContext"
+          ],
+          [
+            "Granted Authority",
+            "A single permission",
+            "READ_BOOKS, DELETE_USER"
+          ],
+          [
+            "Role",
+            "Set of granted authorities",
+            "ROLE_ADMIN = {READ, WRITE, DELETE}"
+          ]
+        ],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Easy",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q75",
+        "question": "What is JWT? Why is it used in REST APIs? What is its structure?",
+        "explanation": "JWT (JSON Web Token) is a compact, URL-safe token for stateless authentication. REST is stateless so each request must carry proof of identity.",
+        "code": "// JWT structure: header.payload.signature\n// eyJhbGciOiJIUzI1NiJ9  .  eyJzdWIiOiJ1c2VyMSJ9  .  [signature]\n//      HEADER (base64)          PAYLOAD (base64)      HMAC-SHA256\n\n// Header: algorithm + token type\n// { \"alg\": \"HS256\", \"typ\": \"JWT\" }\n\n// Payload (claims) — do NOT store passwords!\n// { \"sub\": \"user@email.com\", \"roles\": [\"ADMIN\"], \"exp\": 1700000000 }\n\n// Signature: HMAC(base64(header) + \".\" + base64(payload), secretKey)\n// Tamper-proof: any modification breaks the signature\n\n// JWT authentication flow:\n// 1. POST /signin {email, password}\n// 2. Server validates → generates JWT → returns to client\n// 3. Client stores JWT (localStorage/cookie)\n// 4. Each request: Authorization: Bearer eyJhbGc...\n// 5. Server validates JWT signature → grants access",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "✦ JWT can be READ by client (base64 encoded) but NOT MODIFIED (signature verification fails).",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q76",
+        "question": "Explain Spring Security filter chain.",
+        "explanation": "",
+        "code": "// Spring Security Filter Chain intercepts ALL requests BEFORE DispatcherServlet\n// Filters run in sequence:\n\n// 1. SecurityContextPersistenceFilter — load/save SecurityContext\n// 2. UsernamePasswordAuthenticationFilter — handle POST /login\n// 3. RememberMeAuthenticationFilter — remember-me cookie\n// 4. AnonymousAuthenticationFilter — set anonymous user if no auth\n// 5. AuthorizationFilter — check permissions, block if unauthorized\n// 6. → DispatcherServlet → Controller\n\n// Custom JWT Filter (before UsernamePasswordAuthenticationFilter)\n@Component\nclass JwtRequestFilter extends OncePerRequestFilter {\n    @Override\n    protected void doFilterInternal(HttpServletRequest req, ...) {\n        String jwt = extractJwt(req.getHeader(\"Authorization\"));\n        if (jwtUtil.isValid(jwt)) {\n            UserDetails user = userDetailsService.loadUserByUsername(jwtUtil.getEmail(jwt));\n            UsernamePasswordAuthenticationToken auth =\n                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());\n            SecurityContextHolder.getContext().setAuthentication(auth);\n        }\n        filterChain.doFilter(req, resp);\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q77",
+        "question": "How do you implement Spring Security with JWT for REST APIs?",
+        "explanation": "",
+        "code": "// SIGN-IN FLOW (no auth required)\n// POST /signin {email, password}\n// → AuthController → AuthenticationManager.authenticate()\n// → AuthenticationProvider → MyUserDetailsService.loadUserByUsername(email)\n// → MyUserRepository.findByEmail() → UserDetails returned\n// → AuthManager validates password via PasswordEncoder.matches()\n// → generate JWT → return to client\n\n// PROTECTED ENDPOINT FLOW\n// GET /products  with  Authorization: Bearer <jwt>\n// → JwtRequestFilter: extract jwt → validate → load UserDetails\n// → set Authentication in SecurityContext\n// → AuthorizationFilter: check roles/authorities\n// → MyProductController if authorized → 200 OK\n// → 403 Forbidden if not authorized\n\n@Configuration @EnableWebSecurity\nclass SecurityConfig {\n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        return http\n            .csrf(csrf -> csrf.disable())\n            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n            .authorizeHttpRequests(auth -> auth\n                .requestMatchers(\"/signin\", \"/signup\").permitAll()\n                .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n                .anyRequest().authenticated())\n            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)\n            .build();\n    }\n}",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Hard",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q78",
+        "question": "What is BCrypt? How does Spring Security store passwords?",
+        "explanation": "",
+        "code": "// NEVER store plain-text passwords!\n// BCrypt — adaptive hashing, salted, one-way\n\n@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder(12); // strength 4-31 (12 is secure)\n}\n\n// On registration: hash password before saving\nuser.setPassword(encoder.encode(rawPassword)); // $2a$12$...\n\n// On login: Spring Security automatically calls matches()\nencoder.matches(rawPassword, storedHash);  // → true/false\n// BCrypt always produces different hash (random salt) for same input\n// But matches() extracts salt from stored hash and re-hashes to compare",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "⚠ BCrypt hash of \"password\" is always different but always matchable — that's the salt at work.",
+        "tags": [
+          "Medium",
+          "⭐ Frequent"
+        ]
+      },
+      {
+        "id": "q79",
+        "question": "How do you implement role-based access control in Spring Security?",
+        "explanation": "",
+        "code": "// Option 1: URL-based in SecurityFilterChain\n.authorizeHttpRequests(auth -> auth\n    .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n    .requestMatchers(\"/user/**\").hasAnyRole(\"USER\", \"ADMIN\")\n    .anyRequest().authenticated())\n\n// Option 2: Method-level security (enable with @EnableMethodSecurity)\n@PreAuthorize(\"hasRole('ADMIN')\")\npublic void deleteUser(int id) { ... }\n\n@PostAuthorize(\"returnObject.email == authentication.name\")\npublic User getUser(int id) { ... }\n\n@Secured({\"ROLE_ADMIN\", \"ROLE_MANAGER\"})  // older style\npublic void approveLeave() { ... }",
+        "language": "java",
+        "tableHeaders": [],
+        "tableRows": [],
+        "note": "",
+        "tip": "",
+        "warn": "",
+        "tags": [
+          "Medium"
+        ]
+      }
+    ]
+  }
+]

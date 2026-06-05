@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interview-hub
+  labels:
+    app: interview-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: interview-hub
+  template:
+    metadata:
+      labels:
+        app: interview-hub
+    spec:
+      containers:
+        - name: interview-hub
+          image: REPLACE_WITH_ARTIFACT_REGISTRY_IMAGE
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi

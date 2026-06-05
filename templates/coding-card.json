@@ -1,0 +1,24 @@
+{
+  "num": "33",
+  "numColor": "teal",
+  "title": "Problem Title",
+  "desc": "One-line problem statement and source/company if known.",
+  "tags": [
+    "Java",
+    "Medium"
+  ],
+  "complexity": [
+    {
+      "label": "TIME",
+      "val": "O(n)"
+    },
+    {
+      "label": "SPACE",
+      "val": "O(1)"
+    }
+  ],
+  "approach": "Brief explanation of the approach.",
+  "sqlNote": "",
+  "language": "java",
+  "code": "public class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"TODO\");\n    }\n}"
+}

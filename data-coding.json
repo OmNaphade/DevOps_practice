@@ -1,0 +1,946 @@
+[
+  {
+    "id": "arrays",
+    "label": "Arrays & Pairs",
+    "cards": [
+      {
+        "num": "01",
+        "numColor": "teal",
+        "title": "Two Sum — Return All Pairs",
+        "desc": "Given an array and a target, return all pairs that add up to the target. (Pattern Technologies)",
+        "tags": [
+          "Java",
+          "HashMap",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          },
+          {
+            "label": "BRUTE",
+            "val": "O(n²)"
+          }
+        ],
+        "approach": "Store each element in a HashSet. For every element x, check if (target − x) already exists. Collect unique pairs to avoid duplicates.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class TwoSum {\n\n    // Returns all unique pairs that sum to target\n    public static List<int[]> twoSumPairs(int[] nums, int target) {\n        Set<Integer> seen      = new HashSet<>();\n        Set<String>  usedPairs = new HashSet<>();\n        List<int[]>  result    = new ArrayList<>();\n\n        for (int num : nums) {\n            int complement = target - num;\n            if (seen.contains(complement)) {\n                int a = Math.min(num, complement);\n                int b = Math.max(num, complement);\n                String key = a + \",\" + b;\n                if (usedPairs.add(key))      // add returns false if already present\n                    result.add(new int[]{a, b});\n            }\n            seen.add(num);\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 4, 3, 2, 7, 5};\n        int target = 6;\n        for (int[] p : twoSumPairs(nums, target))\n            System.out.println(\"[\" + p[0] + \", \" + p[1] + \"]\");\n        // Output: [1,5]  [4,2]  [3,3 skipped]\n    }\n}"
+      },
+      {
+        "num": "02",
+        "numColor": "amber",
+        "title": "Pythagorean Triples from Array",
+        "desc": "Find all (a, b, c) in the array such that a² + b² = c². (Coupa Software)",
+        "tags": [
+          "Java",
+          "HashSet",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n²)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          },
+          {
+            "label": "BRUTE",
+            "val": "O(n³)"
+          }
+        ],
+        "approach": "Square all elements and store in a HashSet. Then use two nested loops for pairs — check if their squared sum exists in the set. Avoids the O(n³) triple loop.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class PythagoreanTriples {\n\n    public static List<int[]> findTriples(int[] arr) {\n        List<int[]> result = new ArrayList<>();\n        Set<Long> squares = new HashSet<>();\n\n        for (int x : arr) squares.add((long) x * x);\n\n        Arrays.sort(arr);   // optional: for ordered output\n        int n = arr.length;\n\n        for (int i = 0; i < n - 1; i++) {\n            for (int j = i + 1; j < n; j++) {\n                long sumSq = (long) arr[i] * arr[i] + (long) arr[j] * arr[j];\n                if (squares.contains(sumSq))\n                    result.add(new int[]{arr[i], arr[j], (int) Math.sqrt(sumSq)});\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] arr = {3, 5, 4, 8, 6, 10};\n        for (int[] t : findTriples(arr))\n            System.out.printf(\"(%d, %d, %d)%n\", t[0], t[1], t[2]);\n        // Output: (3,4,5)  (6,8,10)\n    }\n}"
+      },
+      {
+        "num": "03",
+        "numColor": "violet",
+        "title": "Move Zeroes to End",
+        "desc": "Move all zeros to end while preserving order of non-zero elements. (NetSPI / GeeksforGeeks list)",
+        "tags": [
+          "Java",
+          "Two Pointer",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "Use a write-pointer that only advances on non-zero elements. Fill the rest with zeros. Single pass, in-place.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class MoveZeroes {\n\n    public static void moveZeroes(int[] nums) {\n        int write = 0;\n        for (int num : nums)\n            if (num != 0) nums[write++] = num;\n        while (write < nums.length)\n            nums[write++] = 0;\n    }\n\n    public static void main(String[] args) {\n        int[] arr = {0, 1, 0, 3, 12};\n        moveZeroes(arr);\n        System.out.println(Arrays.toString(arr)); // [1, 3, 12, 0, 0]\n    }\n}"
+      },
+      {
+        "num": "04",
+        "numColor": "green",
+        "title": "Merge Intervals",
+        "desc": "Given a list of intervals, merge all overlapping ones. (NetSPI)",
+        "tags": [
+          "Java",
+          "Sort + Merge",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n log n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Sort intervals by start time. Iterate and extend or push. The bottleneck is sorting; the merge itself is O(n).",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class MergeIntervals {\n\n    public static int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);\n        List<int[]> merged = new ArrayList<>();\n\n        for (int[] interval : intervals) {\n            if (merged.isEmpty() || merged.get(merged.size() - 1)[1] < interval[0])\n                merged.add(interval);\n            else\n                merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], interval[1]);\n        }\n        return merged.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] in = {{1,3},{2,6},{8,10},{15,18}};\n        for (int[] r : merge(in))\n            System.out.println(Arrays.toString(r));\n        // [1,6]  [8,10]  [15,18]\n    }\n}"
+      },
+      {
+        "num": "05",
+        "numColor": "red",
+        "title": "Maximize Meetings in a Room",
+        "desc": "Given start and end times, select the maximum number of non-overlapping meetings. (NetSPI)",
+        "tags": [
+          "Java",
+          "Greedy",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n log n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Classic Activity Selection (Greedy). Sort by finish time. Always pick the meeting that ends earliest — maximizes room available for next meetings.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class MaxMeetings {\n\n    public static int maxMeetings(int[] start, int[] end) {\n        int n = start.length;\n        Integer[] idx = new Integer[n];\n        for (int i = 0; i < n; i++) idx[i] = i;\n\n        Arrays.sort(idx, (a, b) -> end[a] != end[b] ? end[a] - end[b] : start[a] - start[b]);\n\n        int count = 1, lastEnd = end[idx[0]];\n        for (int i = 1; i < n; i++) {\n            if (start[idx[i]] > lastEnd) {\n                count++;\n                lastEnd = end[idx[i]];\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        int[] s = {1,3,0,5,8,5};\n        int[] e = {2,4,6,7,9,9};\n        System.out.println(maxMeetings(s, e)); // 4\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "strings",
+    "label": "Strings",
+    "cards": [
+      {
+        "num": "06",
+        "numColor": "teal",
+        "title": "Anagram Check",
+        "desc": "Return true if string t is an anagram of string s. (Pattern Technologies)",
+        "tags": [
+          "Java",
+          "Frequency Array",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1) — fixed 26"
+          }
+        ],
+        "approach": "Use a 26-size int array (one pass increment for s, decrement for t). If all zeros at the end → anagram. Faster than sort-based O(n log n).",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class AnagramCheck {\n\n    public static boolean isAnagram(String s, String t) {\n        if (s.length() != t.length()) return false;\n        int[] freq = new int[26];\n        for (int i = 0; i < s.length(); i++) {\n            freq[s.charAt(i) - 'a']++;\n            freq[t.charAt(i) - 'a']--;\n        }\n        for (int f : freq) if (f != 0) return false;\n        return true;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isAnagram(\"anagram\", \"nagaram\")); // true\n        System.out.println(isAnagram(\"rat\", \"car\"));         // false\n    }\n}"
+      },
+      {
+        "num": "07",
+        "numColor": "amber",
+        "title": "Caesar Cipher / Ciphertext Decoder",
+        "desc": "Decode a shifted string using the known original word to determine the shift. (Pattern Technologies / NetSPI)",
+        "tags": [
+          "Java",
+          "Modular Arithmetic",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Derive shift from the first character of the known word vs its ciphertext equivalent. Then shift all characters back using modular arithmetic (handles wrap-around).",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class CaesarCipher {\n\n    // Decode the full ciphertext given one known original word\n    public static String decode(String cipher, String knownWord) {\n        char cipherChar = char(cipher.toLowerCase().charAt(0));\n        char plainChar  = knownWord.toLowerCase().charAt(0);\n        int  shift = ((cipherChar - plainChar) + 26) % 26;\n\n        StringBuilder sb = new StringBuilder();\n        for (char c : cipher.toCharArray()) {\n            if (Character.isLetter(c)) {\n                char base = Character.isUpperCase(c) ? 'A' : 'a';\n                sb.append((char) ((c - base - shift + 26) % 26 + base));\n            } else {\n                sb.append(c);   // spaces, punctuation untouched\n            }\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) {\n        String cipher    = \"Khoor Zruog\";   // \"Hello World\" shifted by 3\n        String knownWord = \"Hello\";\n        System.out.println(decode(cipher, knownWord)); // Hello World\n    }\n}"
+      },
+      {
+        "num": "08",
+        "numColor": "violet",
+        "title": "Remove Consecutive Special Characters",
+        "desc": "If 2+ consecutive chars from {a,b,e,t,i,o} appear, remove them. (NetSPI Online Test)",
+        "tags": [
+          "Java",
+          "Two Pointer / Scan",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Scan with a start pointer for each run. If the run length ≥ 2, skip. Otherwise append. Single pass over the string.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class RemoveConsecutive {\n\n    private static final Set<Character> SPECIAL =\n        new HashSet<>(Arrays.asList('a','b','e','t','i','o'));\n\n    public static String removeConsecutive(String s) {\n        StringBuilder sb = new StringBuilder();\n        int i = 0, n = s.length();\n\n        while (i < n) {\n            char c = s.charAt(i);\n            if (SPECIAL.contains(c)) {\n                int j = i;\n                while (j < n && SPECIAL.contains(s.charAt(j))) j++;\n                if (j - i < 2) sb.append(c);  // single special char → keep\n                i = j;                              // skip entire run of 2+\n            } else {\n                sb.append(c);\n                i++;\n            }\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(removeConsecutive(\"testing is a boring job\"));\n        // Output: \"sng is a ring j\"\n    }\n}"
+      },
+      {
+        "num": "09",
+        "numColor": "green",
+        "title": "Capitalize Consecutive Target Characters",
+        "desc": "If 2+ consecutive chars from {a,b,e,i,o,u,s,t} appear, capitalize them. (NetSPI DSA Round)",
+        "tags": [
+          "Java",
+          "Linear Scan",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Two-pass: mark all runs of length ≥ 2, then build output. Or single-pass with lookahead.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class CapitalizeConsecutive {\n\n    private static final Set<Character> TARGET =\n        new HashSet<>(Arrays.asList('a','b','e','i','o','u','s','t'));\n\n    public static String capitalize(String s) {\n        char[] arr = s.toCharArray();\n        int i = 0, n = arr.length;\n\n        while (i < n) {\n            char lc = Character.toLowerCase(arr[i]);\n            if (TARGET.contains(lc)) {\n                int j = i;\n                while (j < n && TARGET.contains(Character.toLowerCase(arr[j]))) j++;\n                if (j - i >= 2)\n                    for (int k = i; k < j; k++)\n                        arr[k] = Character.toUpperCase(arr[k]);\n                i = j;\n            } else { i++; }\n        }\n        return new String(arr);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(capitalize(\"Testing is boring!\"));\n        // Output: \"TESTIng IS BOring!\"\n    }\n}"
+      },
+      {
+        "num": "10",
+        "numColor": "red",
+        "title": "Count Character Occurrences",
+        "desc": "Count each character in a string. e.g., \"apoorva\" → a:2, p:1, o:2, r:1, v:1. (Vervotech)",
+        "tags": [
+          "Java",
+          "LinkedHashMap",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(k) — unique chars"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class CharCount {\n\n    public static Map<Character, Integer> count(String s) {\n        Map<Character, Integer> map = new LinkedHashMap<>(); // preserves insertion order\n        for (char c : s.toCharArray())\n            map.merge(c, 1, Integer::sum);\n        return map;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(count(\"apoorva\"));\n        // {a=2, p=1, o=2, r=1, v=1}\n    }\n}"
+      },
+      {
+        "num": "11",
+        "numColor": "teal",
+        "title": "Count '*' Outside Pipe Sections",
+        "desc": "Count all '*' NOT enclosed between two '|' chars. (Cerillion)",
+        "tags": [
+          "Java",
+          "Toggle Flag",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "Toggle a boolean \"inside pipe\" flag on each '|'. Count '*' only when outside.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class StarOutsidePipe {\n\n    public static int countStars(String s) {\n        boolean insidePipe = false;\n        int count = 0;\n        for (char c : s.toCharArray()) {\n            if      (c == '|') insidePipe = !insidePipe;\n            else if (c == '*' && !insidePipe) count++;\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        String s = \"sdff*d|dfd*dsf|df*das*|sdfd**f|\";\n        System.out.println(countStars(s)); // 3\n    }\n}"
+      },
+      {
+        "num": "12",
+        "numColor": "amber",
+        "title": "Phone Keypad Letter Combinations",
+        "desc": "Given a 2-digit string input, return all letter combinations (e.g., \"23\" → ad,ae,af,bd…). (Vervotech)",
+        "tags": [
+          "Java",
+          "Backtracking",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(4ⁿ · n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n) stack depth"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class PhoneKeypad {\n\n    private static final String[] MAP = {\n        \"\", \"\", \"abc\", \"def\", \"ghi\", \"jkl\",\n        \"mno\", \"pqrs\", \"tuv\", \"wxyz\"\n    };\n\n    public static List<String> combinations(String digits) {\n        List<String> result = new ArrayList<>();\n        if (!digits.isEmpty())\n            backtrack(digits, 0, new StringBuilder(), result);\n        return result;\n    }\n\n    private static void backtrack(String digits, int idx,\n                                   StringBuilder current, List<String> result) {\n        if (idx == digits.length()) { result.add(current.toString()); return; }\n        for (char c : MAP[digits.charAt(idx) - '0'].toCharArray()) {\n            current.append(c);\n            backtrack(digits, idx + 1, current, result);\n            current.deleteCharAt(current.length() - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(combinations(\"23\"));\n        // [ad, ae, af, bd, be, bf, cd, ce, cf]\n    }\n}"
+      },
+      {
+        "num": "13",
+        "numColor": "violet",
+        "title": "Binary String Encoder (A/T/C/G)",
+        "desc": "Encode even-length binary string: 00→A, 01→T, 10→C, 11→G. (Thinkbridge Set C)",
+        "tags": [
+          "Java",
+          "Mapping",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class BinaryEncoder {\n\n    private static final char[] CODES = {'A', 'T', 'C', 'G'}; // index = 00,01,10,11\n\n    public static String encode(String binary) {\n        if (binary.length() % 2 != 0) throw new IllegalArgumentException(\"Even length required\");\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < binary.length(); i += 2) {\n            int val = (binary.charAt(i) - '0') * 2 + (binary.charAt(i + 1) - '0');\n            sb.append(CODES[val]);\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(encode(\"001011\")); // \"ATG\"  (00→A, 10→C... wait 10→C, 11→G)\n        System.out.println(encode(\"00011011\")); // \"ATCG\"\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "ds",
+    "label": "Data Structures",
+    "cards": [
+      {
+        "num": "14",
+        "numColor": "teal",
+        "title": "Stack with getMinValue()",
+        "desc": "Design a stack supporting push, pop, peek and getMinValue() all in O(1). (Pattern Technologies)",
+        "tags": [
+          "Java",
+          "Stack",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "ALL OPS",
+            "val": "O(1)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Maintain an auxiliary min-stack in parallel. Push to minStack only when the new value ≤ current min. Pop from minStack only when the main value matches current min.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class MinStack {\n\n    private final Deque<Integer> stack    = new ArrayDeque<>();\n    private final Deque<Integer> minStack = new ArrayDeque<>();\n\n    public void push(int val) {\n        stack.push(val);\n        if (minStack.isEmpty() || val <= minStack.peek())\n            minStack.push(val);\n    }\n\n    public int pop() {\n        int val = stack.pop();\n        if (val == minStack.peek()) minStack.pop();\n        return val;\n    }\n\n    public int peek()         { return stack.peek(); }\n    public int getMinValue()  { return minStack.peek(); }\n\n    public static void main(String[] args) {\n        MinStack ms = new MinStack();\n        ms.push(5); ms.push(3); ms.push(7); ms.push(2);\n        System.out.println(ms.getMinValue()); // 2\n        ms.pop();\n        System.out.println(ms.getMinValue()); // 3\n    }\n}"
+      },
+      {
+        "num": "15",
+        "numColor": "amber",
+        "title": "Valid Parentheses Checker",
+        "desc": "Determine if a string has valid matching pairs of (), [], {}. (Cerillion / Thinkbridge)",
+        "tags": [
+          "Java",
+          "Stack",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class ValidParentheses {\n\n    public static boolean isValid(String s) {\n        Deque<Character> stack = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            switch (c) {\n                case '(', '[', '{' -> stack.push(c);\n                case ')' -> { if (stack.isEmpty() || stack.pop() != '(') return false; }\n                case ']' -> { if (stack.isEmpty() || stack.pop() != '[') return false; }\n                case '}' -> { if (stack.isEmpty() || stack.pop() != '{') return false; }\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isValid(\"aaa(bbb{ccc[aaa]bbb})ccc\")); // true\n        System.out.println(isValid(\"((aaab)\"));                    // false\n    }\n}"
+      },
+      {
+        "num": "16",
+        "numColor": "violet",
+        "title": "Segregate Cars by Type (HashMap Grouping)",
+        "desc": "Input: List<Company<List<Car>>>. Output: Map<type, List<Car>> across all companies. (Pattern Technologies Tech II)",
+        "tags": [
+          "Java",
+          "HashMap + Streams",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(total cars)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(total cars)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\nimport java.util.stream.*;\n\n// Model classes\nrecord Car(int id, String type, String name) {}\nrecord Company(String name, List<Car> cars) {}\n\npublic class CarSegregator {\n\n    // Streams approach — concise and readable\n    public static Map<String, List<Car>> segregate(List<Company> companies) {\n        return companies.stream()\n            .flatMap(c -> c.cars().stream())\n            .collect(Collectors.groupingBy(Car::type));\n    }\n\n    // Explicit HashMap approach (shows logic clearly in interviews)\n    public static Map<String, List<Car>> segregateManual(List<Company> companies) {\n        Map<String, List<Car>> map = new HashMap<>();\n        for (Company co : companies)\n            for (Car car : co.cars())\n                map.computeIfAbsent(car.type(), k -> new ArrayList<>()).add(car);\n        return map;\n    }\n\n    public static void main(String[] args) {\n        List<Company> data = List.of(\n            new Company(\"TataMotors\", List.of(new Car(1,\"SUV\",\"Harrier\"), new Car(2,\"Sedan\",\"Tigor\"))),\n            new Company(\"Maruti\",    List.of(new Car(3,\"SUV\",\"Brezza\"), new Car(4,\"Hatch\",\"Swift\")))\n        );\n        segregate(data).forEach((type, cars) ->\n            System.out.println(type + \": \" + cars));\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "trees",
+    "label": "Trees",
+    "cards": [
+      {
+        "num": "17",
+        "numColor": "teal",
+        "title": "Binary Tree Mirror (Invert)",
+        "desc": "Mirror / invert a binary tree. (NetSPI Technical Interview)",
+        "tags": [
+          "Java",
+          "Tree",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(h) — recursion depth"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class MirrorTree {\n\n    static class Node {\n        int val; Node left, right;\n        Node(int v) { val = v; }\n    }\n\n    public static Node mirror(Node root) {\n        if (root == null) return null;\n        Node tmp  = root.left;\n        root.left  = mirror(root.right);\n        root.right = mirror(tmp);\n        return root;\n    }\n}"
+      },
+      {
+        "num": "18",
+        "numColor": "amber",
+        "title": "Maximum Depth / Height of Tree",
+        "desc": "Find the maximum depth of a binary tree. (NetSPI / GeeksforGeeks list)",
+        "tags": [
+          "Java",
+          "Tree DFS",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(h)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class MaxDepth {\n\n    static class Node { int val; Node left, right; Node(int v){val=v;} }\n\n    public static int maxDepth(Node root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}"
+      },
+      {
+        "num": "19",
+        "numColor": "violet",
+        "title": "Serialize & Deserialize Binary Tree",
+        "desc": "Encode a binary tree to a string and decode it back. (Thinkbridge Hard)",
+        "tags": [
+          "Java",
+          "Tree + BFS",
+          "Hard"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Use BFS (level-order). Serialize null children as \"#\". On deserialization, reconstruct level by level using a queue.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class Codec {\n\n    static class Node { int val; Node l, r; Node(int v){val=v;} }\n\n    // Serialize: BFS → comma-separated, null = \"#\"\n    public static String serialize(Node root) {\n        if (root == null) return \"#\";\n        Queue<Node> q = new LinkedList<>();\n        StringBuilder sb = new StringBuilder();\n        q.add(root);\n        while (!q.isEmpty()) {\n            Node n = q.poll();\n            if (n == null) { sb.append(\"#,\"); continue; }\n            sb.append(n.val).append(',');\n            q.add(n.l); q.add(n.r);\n        }\n        return sb.toString();\n    }\n\n    // Deserialize: rebuild level by level\n    public static Node deserialize(String data) {\n        String[] tokens = data.split(\",\");\n        if (tokens[0].equals(\"#\")) return null;\n        Node root = new Node(Integer.parseInt(tokens[0]));\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n        int i = 1;\n        while (!q.isEmpty() && i < tokens.length) {\n            Node n = q.poll();\n            if (!tokens[i].equals(\"#\")) { n.l = new Node(Integer.parseInt(tokens[i])); q.add(n.l); }\n            i++;\n            if (i < tokens.length && !tokens[i].equals(\"#\")) { n.r = new Node(Integer.parseInt(tokens[i])); q.add(n.r); }\n            i++;\n        }\n        return root;\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "ll",
+    "label": "Linked Lists",
+    "cards": [
+      {
+        "num": "20",
+        "numColor": "teal",
+        "title": "Delete a Node from Linked List",
+        "desc": "Delete a node given only access to that node (not the head). (Pattern Technologies)",
+        "tags": [
+          "Java",
+          "Linked List",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(1)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "Copy the next node's value into the current node, then skip the next node. Classic trick — no need for head reference.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class DeleteNode {\n\n    static class ListNode { int val; ListNode next; ListNode(int v){val=v;} }\n\n    public static void deleteNode(ListNode node) {\n        node.val  = node.next.val;   // overwrite with next's value\n        node.next = node.next.next;  // bypass next node\n    }\n}"
+      },
+      {
+        "num": "21",
+        "numColor": "amber",
+        "title": "Flatten a Multilevel Doubly Linked List",
+        "desc": "Flatten a DLL where nodes may have child sublists. (Veritas)",
+        "tags": [
+          "Java",
+          "DLL + Stack",
+          "Hard"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(d) — max depth"
+          }
+        ],
+        "approach": "When a child is found, save the next pointer on a stack. Wire child as next. When list ends, pop from stack to continue.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class FlattenDLL {\n\n    static class Node {\n        int val; Node prev, next, child;\n        Node(int v) { val = v; }\n    }\n\n    public static Node flatten(Node head) {\n        if (head == null) return null;\n        Deque<Node> stack = new ArrayDeque<>();\n        Node curr = head;\n\n        while (curr != null) {\n            if (curr.child != null) {\n                if (curr.next != null) stack.push(curr.next);\n                curr.next = curr.child;\n                curr.child.prev = curr;\n                curr.child = null;\n            }\n            if (curr.next == null && !stack.isEmpty()) {\n                Node restored = stack.pop();\n                curr.next = restored;\n                restored.prev = curr;\n            }\n            curr = curr.next;\n        }\n        return head;\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "math",
+    "label": "Math / Patterns",
+    "cards": [
+      {
+        "num": "22",
+        "numColor": "teal",
+        "title": "Angle Between Clock Hands",
+        "desc": "Find the shortest angle between hour and minute hands in 24-hour format (no fixed formula). (Pattern Technologies)",
+        "tags": [
+          "Java",
+          "Geometry / Math",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(1)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "Convert 24h → 12h. Hour hand moves 0.5°/min (30°/hr + 0.5°/min). Minute hand moves 6°/min. Shortest angle = min(diff, 360−diff).",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class ClockAngle {\n\n    public static double angleBetweenHands(int hour, int minute) {\n        hour = hour % 12;   // convert 24h → 12h\n\n        // Degrees from 12 o'clock\n        double hourDeg   = hour * 30.0 + minute * 0.5;   // 30°/hr, 0.5°/min\n        double minuteDeg = minute * 6.0;                  // 6°/min\n\n        double diff = Math.abs(hourDeg - minuteDeg);\n        return Math.min(diff, 360.0 - diff);             // shortest angle\n    }\n\n    public static void main(String[] args) {\n        System.out.println(angleBetweenHands(3, 30));  // 75.0°\n        System.out.println(angleBetweenHands(15, 0));  // 90.0°  (15h = 3h)\n        System.out.println(angleBetweenHands(12, 0));  // 0.0°\n    }\n}"
+      },
+      {
+        "num": "23",
+        "numColor": "amber",
+        "title": "Hourglass Star Pattern",
+        "desc": "Print an hourglass shape taking length as input. (C3IT)",
+        "tags": [
+          "Java",
+          "Pattern",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n²)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class HourglassPattern {\n\n    public static void print(int n) {\n        // Upper half (wide → narrow)\n        for (int i = 0; i < n; i++) {\n            for (int sp = 0; sp < i; sp++)       System.out.print(\" \");\n            for (int st = 0; st < 2*(n-i)-1; st++) System.out.print(\"*\");\n            System.out.println();\n        }\n        // Lower half (narrow → wide)\n        for (int i = n - 2; i >= 0; i--) {\n            for (int sp = 0; sp < i; sp++)       System.out.print(\" \");\n            for (int st = 0; st < 2*(n-i)-1; st++) System.out.print(\"*\");\n            System.out.println();\n        }\n    }\n\n    public static void main(String[] args) { print(4); }\n    /*\n    *******\n     *****\n      ***\n       *\n      ***\n     *****\n    *******\n    */\n}"
+      },
+      {
+        "num": "24",
+        "numColor": "violet",
+        "title": "Spiral Matrix",
+        "desc": "Generate an n×n matrix filled with elements 1 to n² in spiral order. (Veritas)",
+        "tags": [
+          "Java",
+          "Simulation",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n²)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n²)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class SpiralMatrix {\n\n    public static int[][] generate(int n) {\n        int[][] mat = new int[n][n];\n        int top = 0, bottom = n-1, left = 0, right = n-1, num = 1;\n\n        while (top <= bottom && left <= right) {\n            for (int c = left;   c <= right;  c++) mat[top][c]    = num++;\n            for (int r = top+1;  r <= bottom; r++) mat[r][right]   = num++;\n            for (int c = right-1; c >= left && top < bottom; c--) mat[bottom][c] = num++;\n            for (int r = bottom-1;r >= top+1 && left < right; r--) mat[r][left]   = num++;\n            top++; bottom--; left++; right--;\n        }\n        return mat;\n    }\n\n    public static void main(String[] args) {\n        for (int[] row : generate(4))\n            System.out.println(Arrays.toString(row));\n    }\n}"
+      },
+      {
+        "num": "25",
+        "numColor": "green",
+        "title": "Prime Numbers in a Range",
+        "desc": "Print all prime numbers from a given range. (Vervotech Interview)",
+        "tags": [
+          "Java",
+          "Sieve of Eratosthenes",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n log log n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          },
+          {
+            "label": "BRUTE",
+            "val": "O(n√n)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "java",
+        "code": "import java.util.*;\n\npublic class PrimeSieve {\n\n    public static List<Integer> primesInRange(int lo, int hi) {\n        boolean[] isComposite = new boolean[hi + 1];\n        isComposite[0] = isComposite[1] = true;\n\n        for (int i = 2; (long) i * i <= hi; i++)\n            if (!isComposite[i])\n                for (int j = i * i; j <= hi; j += i)\n                    isComposite[j] = true;\n\n        List<Integer> primes = new ArrayList<>();\n        for (int i = Math.max(2, lo); i <= hi; i++)\n            if (!isComposite[i]) primes.add(i);\n        return primes;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(primesInRange(10, 50));\n        // [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "sql",
+    "label": "SQL",
+    "cards": [
+      {
+        "num": "1",
+        "numColor": "teal",
+        "title": "2nd Highest Marks",
+        "desc": "Find the second highest marks in a student table. (Securely)",
+        "tags": [
+          "SQL",
+          "Easy"
+        ],
+        "complexity": [],
+        "approach": "",
+        "sqlNote": "💡 Use DENSE_RANK() for ties-aware ranking — avoids subquery nesting.",
+        "language": "sql",
+        "code": "-- Method 1: DENSE_RANK (handles ties correctly)\nSELECT marks\nFROM (\n    SELECT marks, DENSE_RANK() OVER (ORDER BY marks DESC) AS rnk\n    FROM students\n) ranked\nWHERE rnk = 2\nLIMIT 1;\n\n-- Method 2: Subquery (simpler, classic)\nSELECT MAX(marks) FROM students\nWHERE marks < (SELECT MAX(marks) FROM students);\n\n-- Generic Nth highest (replace 2 with N)\nSELECT marks FROM (\n    SELECT DISTINCT marks, DENSE_RANK() OVER (ORDER BY marks DESC) rnk\n    FROM students\n) t WHERE rnk = 2;"
+      },
+      {
+        "num": "2",
+        "numColor": "teal",
+        "title": "Toggle 0 ↔ 1 in a Column",
+        "desc": "Update a column to flip all 1s to 0s and 0s to 1s. (Vervotech)",
+        "tags": [
+          "SQL",
+          "Easy"
+        ],
+        "complexity": [],
+        "approach": "",
+        "sqlNote": "",
+        "language": "sql",
+        "code": "-- Method 1: Using ABS (elegant)\nUPDATE your_table\nSET   flag = ABS(flag - 1);   -- 1→0, 0→1\n\n-- Method 2: Using CASE (most readable)\nUPDATE your_table\nSET   flag = CASE WHEN flag = 1 THEN 0 ELSE 1 END;\n\n-- Method 3: Bitwise XOR (MySQL-specific)\nUPDATE your_table SET flag = flag ^ 1;"
+      },
+      {
+        "num": "3",
+        "numColor": "teal",
+        "title": "Top 5 Users with Most Article Comments",
+        "desc": "JOIN users + articles + comments, GROUP and rank. (Pattern Technologies)",
+        "tags": [
+          "SQL",
+          "Medium"
+        ],
+        "complexity": [],
+        "approach": "",
+        "sqlNote": "",
+        "language": "sql",
+        "code": "-- Schema: users(id, name), articles(id, user_id, title), comments(id, article_id, body)\n\nSELECT\n    u.name                    AS user_name,\n    COUNT(c.id)               AS total_comments\nFROM users u\nJOIN articles a ON a.user_id    = u.id\nJOIN comments c ON c.article_id = a.id\nGROUP BY u.id, u.name\nORDER BY total_comments DESC\nLIMIT 5;\n\n-- Extended: with article breakdown\nSELECT\n    u.name       AS user_name,\n    a.title      AS article_name,\n    COUNT(c.id)  AS comments_count\nFROM users u\nJOIN articles a ON a.user_id    = u.id\nJOIN comments c ON c.article_id = a.id\nGROUP BY u.name, a.title\nORDER BY comments_count DESC;"
+      },
+      {
+        "num": "4",
+        "numColor": "teal",
+        "title": "Students NOT Assigned to Any Department",
+        "desc": "LEFT JOIN + NULL check to find unmatched records. (Securely)",
+        "tags": [
+          "SQL",
+          "Easy"
+        ],
+        "complexity": [],
+        "approach": "",
+        "sqlNote": "",
+        "language": "sql",
+        "code": "-- Method 1: LEFT JOIN with NULL (most efficient)\nSELECT s.*\nFROM      students   s\nLEFT JOIN departments d ON s.dept_id = d.id\nWHERE d.id IS NULL;\n\n-- Method 2: NOT EXISTS (readable)\nSELECT * FROM students s\nWHERE NOT EXISTS (\n    SELECT 1 FROM departments d WHERE d.id = s.dept_id\n);\n\n-- Method 3: NOT IN (avoid if dept_id can be NULL)\nSELECT * FROM students\nWHERE dept_id NOT IN (SELECT id FROM departments WHERE id IS NOT NULL);"
+      },
+      {
+        "num": "5",
+        "numColor": "teal",
+        "title": "Product Name & Total Quantity Sold",
+        "desc": "JOIN products + orders, GROUP BY product. (Pattern Technologies Round 1)",
+        "tags": [
+          "SQL",
+          "Easy"
+        ],
+        "complexity": [],
+        "approach": "",
+        "sqlNote": "",
+        "language": "sql",
+        "code": "-- products(id, name), orders(id, product_id, quantity)\n\nSELECT\n    p.name             AS product_name,\n    COALESCE(SUM(o.quantity), 0) AS total_quantity\nFROM      products p\nLEFT JOIN orders   o ON o.product_id = p.id\nGROUP BY  p.id, p.name\nORDER BY  total_quantity DESC;"
+      }
+    ]
+  },
+  {
+    "id": "misc",
+    "label": "Misc / JS",
+    "cards": [
+      {
+        "num": "26",
+        "numColor": "teal",
+        "title": "Sum of All Elements in an Array",
+        "desc": "JavaScript function to return sum of all array elements. (Cerillion)",
+        "tags": [
+          "JavaScript",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "// Method 1: reduce — idiomatic and concise\nconst arraySum = (arr) => arr.reduce((acc, val) => acc + val, 0);\n\n// Method 2: for...of — clear intent in interviews\nfunction arraySum(arr) {\n    let sum = 0;\n    for (const val of arr) sum += val;\n    return sum;\n}\n\nconsole.log(arraySum([1, 2, 3, 4, 5])); // 15\nconsole.log(arraySum([]));             // 0  (edge case handled)"
+      },
+      {
+        "num": "27",
+        "numColor": "amber",
+        "title": "Chef with 3 Bags (Check-in & Carry Logic)",
+        "desc": "3 bags (A,B,C kg). Check in exactly 2, carry 1. Total check-in ≤ D kg, carry ≤ E kg. Can all 3 be taken? (Thinkbridge Medium)",
+        "tags": [
+          "Java",
+          "Enumeration",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(1) — only 3 choices"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "There are only 3 possible combinations (which bag to carry). Check all 3 — if any is valid, return true.",
+        "sqlNote": "",
+        "language": "java",
+        "code": "public class ChefBags {\n\n    public static boolean canTakeAll(int A, int B, int C, int D, int E) {\n        // Try each bag as the carry-on; other two are checked\n        return  (A <= E && B + C <= D) ||   // carry A, check B+C\n                (B <= E && A + C <= D) ||   // carry B, check A+C\n                (C <= E && A + B <= D);     // carry C, check A+B\n    }\n\n    public static void main(String[] args) {\n        System.out.println(canTakeAll(3, 5, 4, 8, 5)); // true: carry 5, check 3+4=7≤8\n        System.out.println(canTakeAll(5, 6, 7, 5, 4)); // false\n    }\n}"
+      }
+    ]
+  },
+  {
+    "id": "new5",
+    "label": "New Questions",
+    "cards": [
+      {
+        "num": "28",
+        "numColor": "teal",
+        "title": "Mathematical Expression Evaluator",
+        "desc": "User inputs an expression with integers, +, -, *, /, and parentheses. Evaluate with correct operator precedence.",
+        "tags": [
+          "JavaScript",
+          "Stack",
+          "Hard"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Two-stack approach: one for numbers, one for operators. When we see an operator, compare its precedence with the top of the op-stack — if the top has &ge; precedence, pop and evaluate first (handles * / before + -). Parentheses push a sentinel and flush on ')'. No eval() used.",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "/**\n * Evaluates a mathematical expression string.\n * Supports: integers, +, -, *, /, (, )\n * Handles correct operator precedence and parentheses.\n * No eval() — pure stack logic.\n */\nfunction evaluateExpression(expr) {\n    const nums = [];   // number stack\n    const ops  = [];   // operator stack\n\n    const precedence = (op) => (op === '*' || op === '/') ? 2 : 1;\n\n    const applyOp = () => {\n        const b  = nums.pop();\n        const a  = nums.pop();\n        const op = ops.pop();\n        if      (op === '+') nums.push(a + b);\n        else if (op === '-') nums.push(a - b);\n        else if (op === '*') nums.push(a * b);\n        else if (op === '/') nums.push(Math.trunc(a / b));  // integer division\n    };\n\n    let i = 0;\n    const s = expr.replace(/\\s+/g, '');  // strip whitespace\n\n    while (i < s.length) {\n        const ch = s[i];\n\n        // ── Parse multi-digit number ──────────────────────────────\n        if (ch >= '0' && ch <= '9') {\n            let num = 0;\n            while (i < s.length && s[i] >= '0' && s[i] <= '9')\n                num = num * 10 + Number(s[i++]);\n            nums.push(num);\n            continue;\n\n        // ── Open paren: push sentinel ─────────────────────────────\n        } else if (ch === '(') {\n            ops.push('(');\n\n        // ── Close paren: flush until matching '(' ─────────────────\n        } else if (ch === ')') {\n            while (ops.length && ops[ops.length - 1] !== '(')\n                applyOp();\n            ops.pop();  // discard '('\n\n        // ── Operator: respect precedence before pushing ───────────\n        } else if ('+-*/'.includes(ch)) {\n            while (ops.length && ops[ops.length - 1] !== '(' &&\n                   precedence(ops[ops.length - 1]) >= precedence(ch))\n                applyOp();\n            ops.push(ch);\n        }\n        i++;\n    }\n\n    // ── Evaluate remaining operators ──────────────────────────────\n    while (ops.length) applyOp();\n\n    return nums[0];\n}\n\n// ── Tests ──────────────────────────────────────────────────────\nconsole.log(evaluateExpression(\"3 + 2 * 4\"));           // 11  (not 20)\nconsole.log(evaluateExpression(\"(3 + 2) * 4\"));         // 20\nconsole.log(evaluateExpression(\"10 + 2 * 6\"));           // 22\nconsole.log(evaluateExpression(\"100 * (2 + 12) / 14\"));  // 100\nconsole.log(evaluateExpression(\"10 - 3 - 2\"));           // 5  (left-assoc)"
+      },
+      {
+        "num": "29",
+        "numColor": "amber",
+        "title": "String Pattern Replace & Dollar Collapse",
+        "desc": "First 2 chars form the pattern → replace every occurrence with $. Then collapse any consecutive run of 2+ $ into a single $.",
+        "tags": [
+          "JavaScript",
+          "String Scan",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Pass 1 — slide a 2-char window; when it matches the pattern emit '$', else emit the single char and advance by 1.\n    Pass 2 — collapse runs of 2+ consecutive '$' into a single '$' using a toggle pointer.\n    Example: \"ababcab\" → pattern=\"ab\" → \"$\" + \"$c$\" → \"$c$\" after collapse.",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "/**\n * Step 1 — replace every occurrence of the 2-char pattern with '$'.\n * Step 2 — collapse any run of 2+ consecutive '$' → single '$'.\n *\n * Condition 1 example: \"ab$$$cd\" (pattern \"ab\") → \"$$$cd\" → \"$cd\"\n * Condition 2 example: \"$abc$$$c\"                → \"$abc$c\"\n */\nfunction processString(input) {\n    if (input.length < 2) return input;\n\n    const pattern = input.slice(0, 2);\n\n    // ── PASS 1: replace pattern occurrences with '$' ───────────\n    let replaced = '';\n    let i = 0;\n    while (i < input.length) {\n        if (input.slice(i, i + 2) === pattern) {\n            replaced += '$';\n            i += 2;                 // consume both chars of pattern\n        } else {\n            replaced += input[i++]; // keep char as-is\n        }\n    }\n\n    // ── PASS 2: collapse consecutive '$' runs → single '$' ────\n    let collapsed = '';\n    let j = 0;\n    while (j < replaced.length) {\n        collapsed += replaced[j];\n        if (replaced[j] === '$') {\n            while (j + 1 < replaced.length && replaced[j + 1] === '$')\n                j++;  // skip subsequent '$'s in this run\n        }\n        j++;\n    }\n\n    return collapsed;\n}\n\n// ── Tests ──────────────────────────────────────────────────────\nconsole.log(processString(\"ababcab\"));    // pattern=\"ab\" → \"$\"+  \"$c$\" → collapse → \"$c$\"\nconsole.log(processString(\"abababab\"));  // pattern=\"ab\" → \"$$$$\"     → collapse → \"$\"\nconsole.log(processString(\"abXabYab\"));  // pattern=\"ab\" → \"$X$Y$\"    → no adjacent $ → \"$X$Y$\"\nconsole.log(processString(\"cdabcdcd\"));  // pattern=\"cd\" → \"ab$$\"     → collapse → \"ab$\""
+      },
+      {
+        "num": "30",
+        "numColor": "violet",
+        "title": "Caps and Bottles Matching",
+        "desc": "Comma-separated input of caps (C<n>) and bottles (B<n>). A cap fits its matching bottle only if within 3 positions. Count valid matched bottles.",
+        "tags": [
+          "JavaScript",
+          "HashMap + Position Check",
+          "Medium"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(n)"
+          }
+        ],
+        "approach": "Parse input into a position-indexed array. Build two maps: capPositions{num→idx} and bottlePositions{num→idx}. For each bottle, check if a cap with the same number exists AND |capIdx - bottleIdx| &le; 3. Bottles without a matching cap (or cap too far) are not counted.",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "/**\n * Input : comma-separated string, e.g. \"C1,B2,C2,B1,C3,B4,B3\"\n * Rules :\n *   - Cap Cn can only fit Bottle Bn (same number)\n *   - Cap must be within 3 positions (before or after) of the bottle\n *   - Bottles without a valid cap are NOT counted\n *   - No cap/bottle number is repeated\n * Output: count of successfully matched bottles\n */\nfunction countMatchedBottles(input) {\n    const items = input.split(',').map(s => s.trim());\n\n    const capPos    = {};   // { num: index }\n    const bottlePos = {};   // { num: index }\n\n    items.forEach((item, idx) => {\n        const type = item[0].toUpperCase();          // 'C' or 'B'\n        const num  = parseInt(item.slice(1), 10);  // numeric id\n        if      (type === 'C') capPos[num]    = idx;\n        else if (type === 'B') bottlePos[num] = idx;\n    });\n\n    let count = 0;\n    for (const [num, bIdx] of Object.entries(bottlePos)) {\n        const cIdx = capPos[num];\n        if (cIdx !== undefined && Math.abs(cIdx - bIdx) <= 3)\n            count++;\n    }\n    return count;\n}\n\n// ── Tests ──────────────────────────────────────────────────────\n// Positions: 0     1     2     3     4     5     6\n//            C1    B2    C2    B1    C3    B4    B3\n// C1@0 ↔ B1@3: |0-3|=3 ✅  C2@2 ↔ B2@1: |2-1|=1 ✅  C3@4 ↔ B3@6: |4-6|=2 ✅  B4: no cap ❌\nconsole.log(countMatchedBottles(\"C1,B2,C2,B1,C3,B4,B3\"));  // 3\n\n// C1@0 ↔ B1@5: |0-5|=5 > 3 ❌  C2@1 ↔ B2@2: |1-2|=1 ✅\nconsole.log(countMatchedBottles(\"C1,C2,B2,B3,C3,B1\"));    // 2  (B1 too far)"
+      },
+      {
+        "num": "31",
+        "numColor": "green",
+        "title": "Calculate Total Marks from Assignment Objects",
+        "desc": "Match student submissions to assignment questions by index. Skip TEXT. Award marks only if MCQ answer matches exactly.",
+        "tags": [
+          "JavaScript",
+          "Object Traversal",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          }
+        ],
+        "approach": "Questions and submissions are parallel arrays (same index = same question). Iterate by index. Skip if type is TEXT. If MCQ and submittedAns === correctAns, add marks. No external libraries — only array/object access.",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "/**\n * assignmentObj & studentSubmissionObj structures (as given in the problem):\n *\n * Note: questionId 2 appears twice in the problem — this is intentional duplication\n * in the problem statement. We match questions by their ARRAY INDEX to avoid\n * ambiguity, which is the safest and most predictable approach.\n */\n\nfunction calculateTotalMarks(assignmentObj, studentSubmissionObj) {\n    const questions    = assignmentObj.questions;\n    const submissions  = studentSubmissionObj.questions;\n    let   totalMarks   = 0;\n\n    for (let i = 0; i < questions.length; i++) {\n        const question   = questions[i];\n        const submission = submissions[i];\n\n        // Rule: skip TEXT questions entirely\n        if (question.type === 'TEXT') continue;\n\n        // Rule: only award marks if submitted answer matches correct answer\n        if (submission && submission.submittedAns === question.correctAns)\n            totalMarks += question.marks;\n    }\n\n    return totalMarks;\n}\n\n// ── Given Test Data ────────────────────────────────────────────\nconst assignmentObj = {\n    assignmentId: 1,\n    questions: [\n        { questionId: 1, type: 'MCQ',  correctAns: 'A',            marks: 2 },\n        { questionId: 2, type: 'TEXT', correctAns: 'Its a object'        },  // skipped\n        { questionId: 2, type: 'MCQ',  correctAns: 'C',            marks: 3 }\n    ]\n};\n\nconst studentSubmissionObj = {\n    assignmentId: 1,\n    questions: [\n        { questionId: 1, submittedAns: 'B'            },  // MCQ wrong → 0\n        { questionId: 2, submittedAns: 'Its a object' },  // TEXT  → skip\n        { questionId: 2, submittedAns: 'C'            }   // MCQ correct → +3\n    ]\n};\n\nconsole.log(calculateTotalMarks(assignmentObj, studentSubmissionObj));\n// Output: 3\n// Breakdown: Q1 MCQ wrong (0) + Q2 TEXT skipped (0) + Q3 MCQ correct (+3) = 3"
+      },
+      {
+        "num": "32",
+        "numColor": "red",
+        "title": "Closest Element to Target",
+        "desc": "Find the element in the array closest to the given target. No built-in functions. Array can have +ve and -ve numbers.",
+        "tags": [
+          "JavaScript",
+          "Linear Scan",
+          "Easy"
+        ],
+        "complexity": [
+          {
+            "label": "TIME",
+            "val": "O(n)"
+          },
+          {
+            "label": "SPACE",
+            "val": "O(1)"
+          },
+          {
+            "label": "NOTE",
+            "val": "No Math.abs / sort"
+          }
+        ],
+        "approach": "Manual absolute value: diff = (x &ge; target) ? x - target : target - x. Track the smallest diff seen so far and update closest. If two elements are equidistant, the first one found wins (or handle tie-breaking as needed).",
+        "sqlNote": "",
+        "language": "javascript",
+        "code": "/**\n * Finds the array element closest to the given target.\n * Rules:\n *   - No built-in Math functions (Math.abs, Math.min, etc.)\n *   - No sort\n *   - Works with positive and negative numbers\n *   - At least 1 element guaranteed\n *\n * Sample: [6, 3, 9, 14], target = 8  →  Output: 9\n */\nfunction findClosest(arr, target) {\n    let closest = arr[0];\n    // Manual abs — no Math.abs\n    let minDiff = arr[0] >= target ? arr[0] - target : target - arr[0];\n\n    for (let i = 1; i < arr.length; i++) {\n        const diff = arr[i] >= target ? arr[i] - target : target - arr[i];\n\n        if (diff < minDiff) {          // strictly less → first of equal-distance wins\n            minDiff = diff;\n            closest = arr[i];\n        }\n    }\n    return closest;\n}\n\n// ── Tests ──────────────────────────────────────────────────────\nconsole.log(findClosest([6, 3, 9, 14], 8));      // 9   (|9-8|=1 < |6-8|=2)\nconsole.log(findClosest([-10, -3, 5, 12], 0));  // -3  (|-3-0|=3 < |5-0|=5)\nconsole.log(findClosest([1, 2, 3], 10));        // 3   (farthest but closest to 10)\nconsole.log(findClosest([5], 100));             // 5   (single element)\nconsole.log(findClosest([4, 12], 8));           // 4   (equidistant → first wins)"
+      }
+    ]
+  }
+]
